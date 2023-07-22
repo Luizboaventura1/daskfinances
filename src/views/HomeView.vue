@@ -152,7 +152,6 @@
             <div>
               <h1 class="mb-7 text-white">100% gratuito comece a usar hoje!</h1>
               <BtnLoginNav
-              class="elevation-7"
                 @click="linkPagina()"
                 link="/auth/registrar"
               >
