@@ -1,4 +1,4 @@
-# daskfinances
+# DaskFinances
  Personal finance control dashboard
 
  ## *Acesse o site no link abaixo*
