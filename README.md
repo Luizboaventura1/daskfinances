@@ -12,6 +12,9 @@ https://daskfinances.vercel.app
 - Vue router
 - Vuex
 - Scss
+- Html 5
+- Css 3
+- Javascript ES7/ES8
 
 #### *Banco de dados*
 
