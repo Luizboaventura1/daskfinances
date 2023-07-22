@@ -20,4 +20,14 @@ https://daskfinances.vercel.app
 
 - Firebase
 
+#### *Ferramentas*
+
+- Jira
+- Figma
+
+#### *Icones e imagens e outros*
+
+- [Flaticon](https://www.flaticon.com/br/)
+- [Undrawn](https://undraw.co)
+
 Em desenvolvimento...
