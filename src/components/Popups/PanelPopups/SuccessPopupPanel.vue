@@ -28,7 +28,7 @@ defineProps({
   max-width: 250px;
   height: 100px;
   background-color: #373940;
-  position: absolute;
+  position: fixed;
   right: 15px;
   top: 15px;
   z-index: 9999;

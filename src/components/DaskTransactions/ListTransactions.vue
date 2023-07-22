@@ -21,7 +21,7 @@
       <div
       v-for="(transacao,index) in transacoes"
       :key="transacao"
-      class="transacao-single rounded px-3 mx-3">
+      class="transacao-single px-3 mx-3">
       <div class="info-transacao w-100 d-flex align-center">
         <div class="w-25">
           <span class="text-white font-weight-regular">{{transacao.nome}}</span>
@@ -49,76 +49,98 @@
   </div>
   <div
     v-if="stateTransactionModal"
-    class="modal-transaction-edit pa-3"
+    class="modal-transaction-edit pa-3 d-flex justify-center align-center"
   >
-    <nav class="d-flex py-4">
-      <div class="transaction-name w-75">
-        <span
-          class="font-weight-bold text-h5 text-white"
-        >
-          {{ editName }}
-        </span>
-      </div>
-      <div class="close-popup w-25 d-flex justify-end">
-        <CloseButton
-          @click="stateTransactionModal = false"
-        />
-      </div>
-    </nav>
-    <div class="container-edit">
-      <div class="edit-name w-100 mb-4">
-        <div class="d-flex align-center mb-3">
-          <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" fill-rule="evenodd" class=""><g><path d="m19.638 7.199-5.997-4.967A.997.997 0 0 0 13 2H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.969a.998.998 0 0 0-.362-.77zM12 8a1 1 0 0 0 1.005 1L18 8.974V20H6V4h6zM9 18h6a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zm0-4h2a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zm5-7.005 2.242-.012L14 5.126z" data-original="#000000" class=""></path></g></svg>
-          <span class="ms-4 text-white">Descrição</span>
-        </div>
-        <div class="edit-description">
-          <input
-            class="input-edit pa-3"
-            type="text"
-            placeholder="Descrição"
-            v-model="editName"
+    <div class="edit-form elevation-3 px-3">
+      <nav class="d-flex py-4">
+        <div class="transaction-name w-75">
+          <span
+            class="font-weight-bold text-h5 text-white"
           >
+            {{ editName }}
+          </span>
         </div>
-      </div>
-      <div class="edit-transaction-value w-100 mb-4">
-        <div class="d-flex align-center mb-3">
-          <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0Zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10Zm4-8c0 1.654-1.346 3-3 3v1a1 1 0 1 1-2 0v-1h-.268a3.01 3.01 0 0 1-2.598-1.499 1 1 0 1 1 1.73-1.002c.179.31.511.501.867.501h2.268a1 1 0 0 0 1-1 .768.768 0 0 0-.644-.76l-3.041-.507A2.761 2.761 0 0 1 7.999 10c0-1.654 1.346-3 3-3V6a1 1 0 1 1 2 0v1h.268c1.067 0 2.063.575 2.598 1.5a1 1 0 1 1-1.73 1.001 1.004 1.004 0 0 0-.867-.5H11c-.552 0-1 .449-1 1 0 .378.271.698.644.76l3.041.507A2.761 2.761 0 0 1 16 14.001Z" data-original="#000000" class=""></path></g></svg>
-          <span class="ms-4 text-white">Valor da transação</span>
+        <div class="close-popup w-25 d-flex justify-end">
+          <CloseButton
+            @click="stateTransactionModal = false"
+          />
         </div>
-        <div>
-          <input
-            class="input-edit pa-3"
-            placeholder="Valor da transacao"
-            type="text"
-            v-model="editTransactionValue"
+      </nav>
+      <div class="container-edit justify-center align-center">
+        <div class="edit-name w-100 mb-5">
+          <div class="d-flex align-center mb-3">
+            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" fill-rule="evenodd" class=""><g><path d="m19.638 7.199-5.997-4.967A.997.997 0 0 0 13 2H5a1 1 0 0 0-1 1v18a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V7.969a.998.998 0 0 0-.362-.77zM12 8a1 1 0 0 0 1.005 1L18 8.974V20H6V4h6zM9 18h6a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zm0-4h2a1 1 0 0 0 0-2H9a1 1 0 0 0 0 2zm5-7.005 2.242-.012L14 5.126z" data-original="#000000" class=""></path></g></svg>
+            <span class="ms-4 text-white">Descrição</span>
+          </div>
+          <div class="edit-description">
+            <input
+              class="input-edit pa-3"
+              type="text"
+              placeholder="Descrição"
+              v-model="editName"
+            >
+          </div>
+        </div>
+        <div class="edit-transaction-value w-100 mb-5">
+          <div class="d-flex align-center mb-3">
+            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M12 0C5.383 0 0 5.383 0 12s5.383 12 12 12 12-5.383 12-12S18.617 0 12 0Zm0 22C6.486 22 2 17.514 2 12S6.486 2 12 2s10 4.486 10 10-4.486 10-10 10Zm4-8c0 1.654-1.346 3-3 3v1a1 1 0 1 1-2 0v-1h-.268a3.01 3.01 0 0 1-2.598-1.499 1 1 0 1 1 1.73-1.002c.179.31.511.501.867.501h2.268a1 1 0 0 0 1-1 .768.768 0 0 0-.644-.76l-3.041-.507A2.761 2.761 0 0 1 7.999 10c0-1.654 1.346-3 3-3V6a1 1 0 1 1 2 0v1h.268c1.067 0 2.063.575 2.598 1.5a1 1 0 1 1-1.73 1.001 1.004 1.004 0 0 0-.867-.5H11c-.552 0-1 .449-1 1 0 .378.271.698.644.76l3.041.507A2.761 2.761 0 0 1 16 14.001Z" data-original="#000000" class=""></path></g></svg>
+            <span class="ms-4 text-white">Valor da transação</span>
+          </div>
+          <div>
+            <input
+              class="input-edit pa-3"
+              placeholder="Valor da transacao"
+              type="text"
+              v-model="editTransactionValue"
+            >
+          </div>
+        </div>
+        <div class="edit-date w-100 mb-5">
+          <div class="d-flex align-center mb-3">
+            <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 2h-1V1a1 1 0 1 0-2 0v1H8V1a1 1 0 1 0-2 0v1H5C2.243 2 0 4.243 0 7v12c0 2.757 2.243 5 5 5h14c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5ZM5 4h14c1.654 0 3 1.346 3 3v1H2V7c0-1.654 1.346-3 3-3Zm14 18H5c-1.654 0-3-1.346-3-3v-9h20v9c0 1.654-1.346 3-3 3Zm0-8a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h12a1 1 0 0 1 1 1Zm-7 4a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1Z" data-original="#000000" class=""></path></g></svg>
+            <span class="ms-4 text-white">Valor da transação</span>
+          </div>
+          <div>
+            <input
+              class="input-edit pa-3"
+              type="date"
+              placeholder="Data"
+              v-model="editDate"
+            >
+          </div>
+        </div>
+        <div class="d-flex pb-4">
+          <v-btn
+            @click="saveChanges"
+            class="rounded me-2 w-75 bg-green-accent-3"
           >
-        </div>
-      </div>
-      <div class="edit-date w-100 mb-4">
-        <div class="d-flex align-center mb-3">
-          <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 2h-1V1a1 1 0 1 0-2 0v1H8V1a1 1 0 1 0-2 0v1H5C2.243 2 0 4.243 0 7v12c0 2.757 2.243 5 5 5h14c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5ZM5 4h14c1.654 0 3 1.346 3 3v1H2V7c0-1.654 1.346-3 3-3Zm14 18H5c-1.654 0-3-1.346-3-3v-9h20v9c0 1.654-1.346 3-3 3Zm0-8a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h12a1 1 0 0 1 1 1Zm-7 4a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1Z" data-original="#000000" class=""></path></g></svg>
-          <span class="ms-4 text-white">Valor da transação</span>
-        </div>
-        <div>
-          <input
-            class="input-edit pa-3"
-            type="date"
-            placeholder="Data"
-            v-model="editDate"
+            Salvar
+          </v-btn>
+          <CancelBtn
+            @click="stateTransactionModal = false"
           >
+            Cancelar
+          </CancelBtn>
         </div>
       </div>
     </div>
   </div>
+  <SuccessPopupPanel
+    :statePopupPanel="statePopupPanel"
+  >
+    {{ textPopupPanel }}
+  </SuccessPopupPanel>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, doc } from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
+import CancelBtn from '@/components/Buttons/CancelBtn.vue'
+import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
 
 const store = useStore()
 
@@ -128,17 +150,32 @@ let transacoes = ref([])
 
 onMounted(async () => {
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
+    let newTransactions = ref([])
+
     snapshot.forEach((docTransaction) => {
       if(token.id === docTransaction.data().idUser) {
-        transacoes.value.push(docTransaction.data())
+        newTransactions.value.push({
+          id: docTransaction.id,
+          nome: docTransaction.data().nome,
+          valor: docTransaction.data().valor,
+          tipo: docTransaction.data().tipo,
+          data: docTransaction.data().data,
+          idUser: docTransaction.data().idUser
+        })
       }
     })
+    transacoes.value = newTransactions.value
   });
 })
 
+
 // Transaction edit
 
+let currentyIdTransaction = ref('')
+
 const transactionEdit = ((index) => {
+  currentyIdTransaction.value = transacoes.value[index].id
+
   stateTransactionModal.value = true
   currentyTransaction.value = {...transacoes.value[index]}
 
@@ -154,6 +191,30 @@ let editName = ref("")
 let editTransactionValue = ref("")
 let editDate = ref("")
 
+const saveChanges = () => {
+  const transactionDocRef = doc(db, 'transacoes', currentyIdTransaction.value);
+
+  updateDoc(transactionDocRef, {
+    nome: editName.value,
+    valor: editTransactionValue.value,
+    data: editDate.value,
+  })
+
+  alertPopupPanel('Alterado com sucesso!')
+  stateTransactionModal.value = false
+}
+
+let statePopupPanel = ref(false)
+let textPopupPanel = ref('')
+
+const alertPopupPanel = (msg) => {
+  statePopupPanel.value = true
+  textPopupPanel.value = msg
+
+  setTimeout(() => {
+    statePopupPanel.value = false
+  },2000)
+}
 </script>
 
 <style lang="scss" scoped>
@@ -204,9 +265,17 @@ let editDate = ref("")
   .modal-transaction-edit {
     position: fixed;
     top: 60px;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: #17191c;
+    background-color: #17191c9b;
+    backdrop-filter: blur(5px);
+
+    .edit-form {
+      background-color: #25272c;
+      max-width: 500px;
+      width: 100%;
+    }
   }
 
   #icon-edit {
@@ -218,8 +287,11 @@ let editDate = ref("")
   .input-edit {
     outline: none;
     border: none;
+    width: 100%;
+    background-color: #34363c;
     &:focus {
       border-bottom: 1px solid rgb(0, 170, 255);
     }
   }
+
 </style>
