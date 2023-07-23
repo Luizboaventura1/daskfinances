@@ -254,7 +254,7 @@ const testimonials = ref([
     text: 'Ótima ferramenta para alcançar metas financeiras importantes.',
   },
 ])
-console.log(import.meta.env.DB)
+
 </script>
 
 <style scoped lang="scss">
