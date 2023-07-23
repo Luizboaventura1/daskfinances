@@ -97,6 +97,20 @@ import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 import ErrorInputLogin from '@/components/Popups/ErrorLogin/ErrorInputLogin.vue';
 import AlertPopupPanel from '@/components/Popups/PanelPopups/AlertPopupPanel.vue';
+//import { getAuth,createUserWithEmailAndPassword } from 'firebase/auth';
+
+/* Auth
+const auth = getAuth()
+
+const registerUser = () => {
+  createUserWithEmailAndPassword(auth,'luiz2123@gmail.com','233784').then(user => {
+    console.log(user.user)
+  }).catch(error => [
+    console.log(error)
+  ])
+}
+*/
+//==================================
 
 const store = useStore()
 
@@ -107,7 +121,7 @@ onMounted(async () => {
     snapshot.forEach((user) => {
       const obj = {
         id: user.id,
-        nome: user.data().nome,
+         nome: user.data().nome,
         gmail: user.data().gmail,
         senha: user.data().senha
       }
@@ -128,7 +142,7 @@ const registrarUsuario = () => {
   let gmailValue = gmail.value.trim()
   let senhaValue = senha.value.trim()
 
-  if(nomeValue != '' && gmailValue != '' && senhaValue != '') {
+  if(nomeValue != '' && gmailValue != '' && senhaValue != '' && errorRegister(nomeValue,gmailValue,senhaValue) === true) {
 
     let verificarSeAContaExiste = AllUsers.value.some(user => user.gmail.startsWith(gmailValue))
     
@@ -156,11 +170,21 @@ const registrarUsuario = () => {
     }else {
       alertPopupPanel('Essa conta já existe!')
     }
-  }else {
+  }
+  else if(!errorRegister(nomeValue,gmailValue,senhaValue)) {
+    alertPopupPanel('Preencha os campos corretamente!')
+  }
+  else {
     ErrorInputs(nome.value,gmail.value,senha.value)
   }
 }
 
+
+const errorRegister = (name,email,password) => {
+  if(name.length > 1 && email.split('@').length > 1 && password.length >= 8) 
+    return true
+  return false
+}
 
 // Loader
 
