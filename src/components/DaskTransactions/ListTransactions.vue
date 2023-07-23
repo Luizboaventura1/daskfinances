@@ -197,7 +197,7 @@ const saveChanges = () => {
   updateDoc(transactionDocRef, {
     nome: editName.value,
     valor: editTransactionValue.value,
-    data: editDate.value,
+    data: editDate.value.replace(/-/g,'/'),
   })
 
   alertPopupPanel('Alterado com sucesso!')
