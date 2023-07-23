@@ -98,7 +98,7 @@
         <div class="edit-date w-100 mb-5">
           <div class="d-flex align-center mb-3">
             <svg id="icon-edit" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="M19 2h-1V1a1 1 0 1 0-2 0v1H8V1a1 1 0 1 0-2 0v1H5C2.243 2 0 4.243 0 7v12c0 2.757 2.243 5 5 5h14c2.757 0 5-2.243 5-5V7c0-2.757-2.243-5-5-5ZM5 4h14c1.654 0 3 1.346 3 3v1H2V7c0-1.654 1.346-3 3-3Zm14 18H5c-1.654 0-3-1.346-3-3v-9h20v9c0 1.654-1.346 3-3 3Zm0-8a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h12a1 1 0 0 1 1 1Zm-7 4a1 1 0 0 1-1 1H6a1 1 0 1 1 0-2h5a1 1 0 0 1 1 1Z" data-original="#000000" class=""></path></g></svg>
-            <span class="ms-4 text-white">Valor da transação</span>
+            <span class="ms-4 text-white">Data da transação</span>
           </div>
           <div>
             <input
