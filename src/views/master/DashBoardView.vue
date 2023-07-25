@@ -60,12 +60,10 @@
           </router-link>
         </v-list-item>
         <v-list-item>
-          <router-link @click="logout()" class="text-decoration-none" to="/">
-            <div class="btn-sair w-100 py-3 ps-6 pe-2 d-flex align-center">
-              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="m27.3 256 114.3-101.6v63.5h228.7v76.2H141.7v63.5zm457.4 203.2V52.8H179.8v127H256V129h152.4v254H256v-50.8h-76.2v127z" data-original="#000000" class=""></path></g></svg>
-              <span class="ms-3 text-white">Sair</span>
-            </div>
-          </router-link>
+          <div @click="logout" class="btn-sair w-100 py-3 ps-6 pe-2 d-flex align-center">
+            <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.com/svgjs" width="512" height="512" x="0" y="0" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512" xml:space="preserve" class=""><g><path d="m27.3 256 114.3-101.6v63.5h228.7v76.2H141.7v63.5zm457.4 203.2V52.8H179.8v127H256V129h152.4v254H256v-50.8h-76.2v127z" data-original="#000000" class=""></path></g></svg>
+            <span class="ms-3 text-white">Sair</span>
+          </div>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
@@ -81,23 +79,43 @@
     <v-main>
       <router-view />
     </v-main>
+    <ConfirmModal
+      @confirmButton="confirmButton"
+      @cancelButton="cancelButton"
+      :stateConfirmModal="stateConfirmModal"
+    >
+    Tem certeza?
+  </ConfirmModal>
   </v-app>
 </template>
 
 <script setup>
 import store from '@/store'
 import { ref } from 'vue'
+import ConfirmModal from '@/components/Popups/PanelPopups/ConfirmModal.vue';
 
 
 let imgAvatar = require('@/assets/logo-daskfinances-semfundo.png')
 let nome = ref(store.state.token.nome)
 
 const logout = () => {
-  location.href = '/'
-  store.commit('addToken', {})
+  stateConfirmModal.value = true
 }
 
 let isDrawer = ref(true)
+
+// sign out of account
+
+let stateConfirmModal = ref(false)
+
+const cancelButton = () => {
+  stateConfirmModal.value = false
+}
+
+const confirmButton = () => {
+  location.href = '/'
+  store.commit('addToken', {})
+}
 
 </script>
 

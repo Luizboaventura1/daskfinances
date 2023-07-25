@@ -1,77 +1,70 @@
 <template>
-  <header class="d-flex justify-center align-center">
-    <v-container class="d-flex justify-center align-center">
-      <form class="elevation-10 rounded-lg py-3 px-4">
-        <h1 class="text-white text-center mb-5">Login</h1>
-        <div class="mb-4">
-          <input
-          required
-          v-model="gmail"
-          class="text-white w-100 border-0 pa-2 rounded"
-          type="email"
-          placeholder="Seu email">
-          <ErrorInputLogin
-            :statePopup="stateErrorInputGmail"
-          >
-            Gmail incorreto!
-          </ErrorInputLogin>
-        </div>
-
-        <div class="mb-6">
-          <input
-          required
-          v-model="senha"
-          class="text-white w-100 border-0 pa-2 rounded"
-          type="password"
-          placeholder="Sua senha">
-          <ErrorInputLogin
-            :statePopup="stateErrorInputPassword"
-          >
-            Senha incorreta!
-          </ErrorInputLogin>
-        </div>
-
-        <v-btn
-        :disabled="loader"
-        :loading="loader"
-        @click="logarUsuario()"
-        class="w-100 my-3 button-entrar"
-        >Entrar</v-btn>
-
-        <div class="w-100 text-center">
-          <router-link
-          class="link-registrar text-decoration-none font-weight-light"
-          to="/auth/registrar">Não tem uma conta?</router-link>
-        </div>
-      </form>
-    </v-container>
-  </header>
-
-  <v-dialog
-      v-model="loader"
-      :scrim="false"
-      persistent
-      width="auto"
-    >
-      <v-card
-        color="blue-darken-1"
+  <v-app theem="dark">
+    <header class="d-flex justify-center align-center">
+      <v-container class="d-flex justify-center align-center">
+        <form class="elevation-10 rounded-lg py-3 px-4">
+          <h1 class="text-white text-center mb-5">Login</h1>
+          <div class="mb-2">
+            <v-text-field
+              label="Email"
+              v-model="gmail"
+              class="text-white w-100 border-0 pa-2 rounded"
+              type="email"
+              placeholder="Seu email"
+              :rules="emailRules"
+              variant="outlined"
+            ></v-text-field>
+          </div>
+          <div class="mb-2">
+            <v-text-field
+              label="Senha"
+              v-model="senha"
+              class="text-white w-100 border-0 pa-2 rounded"
+              type="password"
+              placeholder="Sua senha"
+              :rules="passwordRules"
+              variant="outlined"
+            ></v-text-field>
+          </div>
+          <v-btn
+          :disabled="loader"
+          :loading="loader"
+          @click="logarUsuario()"
+          class="w-100 my-3 button-entrar"
+          >Entrar</v-btn>
+          <div class="w-100 text-center">
+            <router-link
+            class="link-registrar text-decoration-none font-weight-light"
+            to="/auth/registrar">Não tem uma conta?</router-link>
+          </div>
+        </form>
+      </v-container>
+    </header>
+    <v-dialog
+        v-model="loader"
+        :scrim="false"
+        persistent
+        width="auto"
       >
-        <v-card-text>
-          Entrando
-          <v-progress-linear
-            indeterminate
-            color="white"
-            class="mb-0"
-          ></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
-
-  <AlertPopupPanel
-    :statePopupPanel="statePopupPanel"
-  >
-    {{ textPopupPanel }}
-  </AlertPopupPanel>
+        <v-card
+          color="blue-darken-1"
+        >
+          <v-card-text>
+            Entrando
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    <AlertPopupPanel
+      :statePopupPanel="statePopupPanel"
+    >
+      {{ textPopupPanel }}
+    </AlertPopupPanel>
+  </v-app>
 </template>
 
 <script setup>
@@ -81,7 +74,6 @@ import { useRouter } from 'vue-router';
 import { db } from '@/firebase'
 import { collection, onSnapshot} from "firebase/firestore";
 import { onMounted } from 'vue';
-import ErrorInputLogin from '@/components/Popups/ErrorLogin/ErrorInputLogin.vue';
 import AlertPopupPanel from '@/components/Popups/PanelPopups/AlertPopupPanel.vue';
 
 let AllUsers = ref([])
@@ -111,7 +103,7 @@ const logarUsuario = () => {
   let gmailValue = gmail.value.trim()
   let senhaValue = senha.value.trim()
 
-  if(gmailValue != '' && senhaValue != '') {
+  if(confirmRules) {
     //Verifica se tem uma conta existente
     let verificarSeAContaExiste = AllUsers.value.find(user => {
       if(user.gmail === gmailValue && user.senha === senhaValue) {
@@ -147,8 +139,6 @@ const logarUsuario = () => {
     }else {
       alertPopupPanel('Conta não encontrada!')
     }
-  }else {
-    ErrorInputs(gmail.value,senha.value)
   }
 }
 
@@ -157,21 +147,6 @@ const logarUsuario = () => {
 let loader = ref(false)
 
 // Popups
-
-let stateErrorInputGmail = ref(false)
-let stateErrorInputPassword = ref(false)
-
-const ErrorInputs = (gmail,password) => {
-
-  if(gmail === '') {
-    stateErrorInputGmail.value = true
-  }
-
-  if(password === '') {
-    stateErrorInputPassword.value = true
-  }
-
-}
 
 let statePopupPanel = ref(false)
 let textPopupPanel = ref('')
@@ -183,6 +158,38 @@ const alertPopupPanel = (msg) => {
   setTimeout(() => {
     statePopupPanel.value = false
   },2000)
+}
+
+// Rules login
+
+const emailRules = [
+    value => {
+      if(value)
+        return true
+      return 'Email obrigatório!'
+    },
+    value => {
+      if(value.includes('@'))
+        return true
+      return 'Email inválido!'
+    },
+  ]
+
+const passwordRules = [
+  value => {
+    if(value)
+      return true
+    return 'Senha obrigatória!'
+  }
+]
+
+const confirmRules = () => {
+  if(
+    emailRules[0] && emailRules[1] &&
+    passwordRules[0]
+  ) return true
+
+  return false
 }
 
 </script>

@@ -4,46 +4,43 @@
       <form class="elevation-10 rounded-lg py-3 px-4">
         <h1 class="text-white text-center mb-5">Registrar</h1>
 
-        <div class="mb-4">
-          <input
-          required
-          v-model="nome"
-          class="text-white w-100 border-0 pa-2 rounded"
-          type="email"
-          placeholder="Primeiro nome">
-          <ErrorInputLogin
-            :statePopup="stateErrorInputName"
-          >
-            Preencha corretamente!
-          </ErrorInputLogin>
+        <div>
+          <v-text-field
+            required
+            label="Nome"
+            v-model="nome"
+            class="text-white w-100 border-0 pa-2 rounded"
+            type="email"
+            placeholder="Primeiro nome"
+            :rules="nameRules"
+            variant="outlined"
+          ></v-text-field>
         </div>
 
-        <div class="mb-4">
-          <input
-          required
-          v-model="gmail"
-          class="text-white w-100 border-0 pa-2 rounded"
-          type="email"
-          placeholder="Seu email">
-          <ErrorInputLogin
-            :statePopup="stateErrorInputGmail"
-          >
-            Preencha corretamente!
-          </ErrorInputLogin>
+        <div>
+          <v-text-field
+            label="Email"
+            required
+            v-model="gmail"
+            class="text-white w-100 border-0 pa-2 rounded"
+            type="email"
+            placeholder="Seu email"
+            :rules="emailRules"
+            variant="outlined"
+          ></v-text-field>
         </div>
 
-        <div class="mb-6">
-          <input
-          required
-          v-model="senha"
-          class="text-white w-100 border-0 pa-2 rounded"
-          type="password"
-          placeholder="Sua senha">
-          <ErrorInputLogin
-            :statePopup="stateErrorInputPassword"
-          >
-            Preencha corretamente!
-          </ErrorInputLogin>
+        <div>
+          <v-text-field
+            label="Senha"
+            required
+            v-model="senha"
+            class="text-white w-100 border-0 pa-2 rounded"
+            type="password"
+            placeholder="Sua senha"
+            :rules="passwordRules"
+            variant="outlined"
+          ></v-text-field>
         </div>
 
         <v-btn
@@ -95,7 +92,6 @@ import { collection, addDoc, onSnapshot } from "firebase/firestore";
 import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
-import ErrorInputLogin from '@/components/Popups/ErrorLogin/ErrorInputLogin.vue';
 import AlertPopupPanel from '@/components/Popups/PanelPopups/AlertPopupPanel.vue';
 //import { getAuth,createUserWithEmailAndPassword } from 'firebase/auth';
 
@@ -142,7 +138,7 @@ const registrarUsuario = () => {
   let gmailValue = gmail.value.trim()
   let senhaValue = senha.value.trim()
 
-  if(nomeValue != '' && gmailValue != '' && senhaValue != '' && errorRegister(nomeValue,gmailValue,senhaValue) === true) {
+  if(confirmRules) {
 
     let verificarSeAContaExiste = AllUsers.value.some(user => user.gmail.startsWith(gmailValue))
     
@@ -171,19 +167,6 @@ const registrarUsuario = () => {
       alertPopupPanel('Essa conta já existe!')
     }
   }
-  else if(!errorRegister(nomeValue,gmailValue,senhaValue)) {
-    alertPopupPanel('Preencha os campos corretamente!')
-  }
-  else {
-    ErrorInputs(nome.value,gmail.value,senha.value)
-  }
-}
-
-
-const errorRegister = (name,email,password) => {
-  if(name.length > 1 && email.split('@').length > 1 && password.length >= 8) 
-    return true
-  return false
 }
 
 // Loader
@@ -191,25 +174,6 @@ const errorRegister = (name,email,password) => {
 let loader = ref(false)
 
 // Popups
-
-let stateErrorInputName = ref(false)
-let stateErrorInputGmail = ref(false)
-let stateErrorInputPassword = ref(false)
-
-const ErrorInputs = (name,gmail,password) => {
-  if(name === '') {
-    stateErrorInputName.value = true
-  }
-
-  if(gmail === '') {
-    stateErrorInputGmail.value = true
-  }
-
-  if(password === '') {
-    stateErrorInputPassword.value = true
-  }
-
-}
 
 let statePopupPanel = ref(false)
 let textPopupPanel = ref('')
@@ -223,7 +187,56 @@ const alertPopupPanel = (msg) => {
   },2000)
 }
 
+// Rules login
 
+const nameRules = ref([
+  value => {
+    if(value)
+      return true
+    return 'Senha obrigatória!'
+  },
+  value => {
+    if(value.length >= 3) 
+      return true
+    return 'Minimo 3 letras'
+  }
+])
+
+const emailRules = ref([
+  value => {
+    if(value)
+      return true
+    return 'Email obrigatório!'
+  },
+  value => {
+    if(value.includes('@'))
+      return true
+    return 'Email inválido!'
+  },
+])
+
+const passwordRules = ref([
+  value => {
+    if(value)
+      return true
+    return 'Senha obrigatória!'
+  },
+  value => {
+    if(value.length >= 8)
+      return true
+    return 'Minimo 8 caracteres'
+  }
+])
+
+const confirmRules = () => {
+  if(
+    nameRules.value[0] && nameRules.value[1] &&
+    emailRules.value[0] && emailRules.value[1] &&
+    passwordRules.value[0] && passwordRules.value[1]
+  ) return true
+
+  return false
+}
 
 </script>
 
