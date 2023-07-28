@@ -131,6 +131,15 @@ const addTransacao = () => {
       tipo: tipoTransacao.value,
     });
 
+    addDoc(collection(db, "notifications"), {
+      idUser: store.state.token.id,
+      title: 'Nova transação',
+      text: `Transação R$ ${formatNumber(valorTransacao.value)}`,
+      date: String(new Date()),
+      link: '/',
+      unread: true
+    });
+
     const saldoDocRef = doc(db, 'saldo', idSaldoCollection.value);
 
     if (tipoTransacao.value === "receita") {

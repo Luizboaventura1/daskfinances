@@ -26,6 +26,15 @@ onMounted(async () => {
             receita: 0,
             gasto: 0
           })
+
+          addDoc(collection(db, "notifications"), {
+            idUser: docUsuario.id,
+            title: 'DaskFinances',
+            text: 'Aproveite nossa plataforma 100% gratuita!',
+            date: String(new Date()),
+            link: '/',
+            unread: true
+          });
         }
       }
     })

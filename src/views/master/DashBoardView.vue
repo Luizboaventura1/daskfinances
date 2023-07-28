@@ -68,6 +68,7 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar
+      class="d-flex"
       color="#25272c"
     >
       <v-app-bar-nav-icon
@@ -75,6 +76,22 @@
         @click="isDrawer = !isDrawer"
       >
       </v-app-bar-nav-icon>
+      <div class="w-100 d-flex justify-end me-5">
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <BadgeIcon
+              @readNotification="readNotification"
+              :propsBadge="props"
+            />
+          </template>
+          <NotificationBox>
+            <NewNotification
+              :notificationsList="notificationsList"
+            />
+          </NotificationBox>
+        </v-menu>
+      </div>
+
     </v-app-bar>
     <v-main>
       <router-view />
@@ -93,7 +110,45 @@
 import store from '@/store'
 import { ref } from 'vue'
 import ConfirmModal from '@/components/Popups/PanelPopups/ConfirmModal.vue';
+import NotificationBox from '@/components/Notifications/NotificationBox.vue';
+import NewNotification from '@/components/Notifications/NewNotification.vue';
+import BadgeIcon from '@/components/Notifications/BadgeIcon.vue';
+import { db } from '@/firebase'
+import { collection, onSnapshot,updateDoc, doc} from "firebase/firestore";
+import { onMounted } from 'vue';
 
+let imgDask = require('../../assets/logo-daskfinances-semfundo.png')
+
+let notificationsList = ref([])
+
+onMounted(async () => {
+  onSnapshot(collection(db, "notifications"), (snapshot) => {
+    let notifications = []
+    snapshot.forEach((notification) => {
+      if(store.state.token.id === notification.data().idUser) {
+        notifications.push({
+          id: notification.id,
+          icon: imgDask,
+          title: notification.data().title,
+          text: notification.data().text,
+          date: notification.data().date,
+          link: notification.data().link
+        })
+      }
+    })
+    notificationsList.value = notifications
+  });
+})
+
+const readNotification = () => {
+  notificationsList.value.forEach(notification => {
+    const notificationDocRef = doc(db, 'notifications', notification.id);
+
+    updateDoc(notificationDocRef, {
+      unread: false
+    })
+  })
+}
 
 let imgAvatar = require('@/assets/logo-daskfinances-semfundo.png')
 let nome = ref(store.state.token.nome)
