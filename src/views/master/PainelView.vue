@@ -1,30 +1,5 @@
 <template>
-  <v-row class="container-saldo-conta w-100">
-    <v-col cols="12" sm="4">
-      <div class="saldo elevation-6 rounded-lg pa-2 d-flex ma-3">
-        <span class="text-white font-weight-bold">Saldo</span>
-        <div class="font-weight-regular text-green-accent-3 text-h6 w-100 align-self-end text-right">
-          {{ formatNumber(saldoUser) }}
-        </div>
-      </div>
-    </v-col>
-    <v-col cols="12" sm="4">
-      <div class="receitas elevation-6 rounded-lg pa-2 d-flex ma-3">
-        <span class="text-white font-weight-bold">Receitas</span>
-        <div class="font-weight-regular text-blue text-h6 w-100 align-self-end text-right">
-          {{ formatNumber(receitaUser) }}
-        </div>
-      </div>
-    </v-col>
-    <v-col cols="12" sm="4">
-      <div class="gastos elevation-6 rounded-lg pa-2 d-flex ma-3">
-        <span class="text-white font-weight-bold">Gastos</span>
-        <div class="font-weight-regular text-red-accent-3 text-h6 w-100 align-self-end text-right">
-          {{ formatNumber(gastoUser) }}
-        </div>
-      </div>
-    </v-col>
-  </v-row>
+  <BalancePanel/>
   <div class="container-add-finance pa-3 rounded ma-3 elevation-6">
     <div class="w-100">
       <h1 class="text-white text-h6 font-weight-bold">Nova transação</h1>
@@ -105,6 +80,7 @@ import { collection, addDoc, onSnapshot,updateDoc,doc} from "firebase/firestore"
 import { onMounted } from 'vue';
 import AlertPopupPainel from "@/components/Popups/PanelPopups/AlertPopupPanel.vue";
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue';
+import BalancePanel from '@/components/BalanceContainer/BalancePanel.vue'
 
 // Adicionar nova transação
 
@@ -119,9 +95,21 @@ const validadeInput = (() => {
   valorTransacao.value = valorTransacao.value.replace(/[^0-9.]/g, "")
 })
 
+const noSpaces = (() => {
+  if(
+     nomeTransacao.value.trim()  != '' 
+  && valorTransacao.value.trim() != '' 
+  && dataTransacao.value.trim()  != '' 
+  && tipoTransacao.value.trim()  != ''
+  )
+    return true
+    
+  return false
+})
+
 const addTransacao = () => {
 
-  if(nomeTransacao.value.trim() != '' && valorTransacao.value.trim() != '' && dataTransacao.value.trim() != '' && tipoTransacao.value.trim() != '') {
+  if(noSpaces()) {
     
     addDoc(collection(db, "transacoes"), {
       idUser: store.state.token.id,
@@ -134,7 +122,7 @@ const addTransacao = () => {
     addDoc(collection(db, "notifications"), {
       idUser: store.state.token.id,
       title: 'Nova transação',
-      text: `Transação R$ ${formatNumber(valorTransacao.value)}`,
+      text: `Transação ${formatNumber(valorTransacao.value)}`,
       date: String(new Date()),
       link: '/',
       unread: true
@@ -213,12 +201,6 @@ const successPopup = (msg) => {
 </script>
 
 <style lang="scss" scoped>
-  .saldo,.receitas,.gastos {
-    width: 100%;
-    height: 100px;
-    background-color: #25272c;
-  }
-
   // Add new finance
 
   .container-add-finance {

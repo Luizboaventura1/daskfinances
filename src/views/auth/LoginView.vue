@@ -104,19 +104,18 @@ const logarUsuario = () => {
   let senhaValue = senha.value.trim()
 
   if(confirmRules) {
-    //Verifica se tem uma conta existente
+
     let verificarSeAContaExiste = AllUsers.value.find(user => {
-      if(user.gmail === gmailValue && user.senha === senhaValue) {
+      if(user.gmail === gmailValue && user.senha === senhaValue) 
         return true
-      }
 
       return false
     })
 
-    let gmailUser = AllUsers.value.find((item) => item.gmail == gmailValue)
-    let senhaUser = AllUsers.value.find((item) => item.senha == senhaValue)
+    let gmailUser = AllUsers.value.find((item) => item.gmail === gmailValue)
+    let senhaUser = AllUsers.value.find((item) => item.senha === senhaValue)
     let nomeUser = AllUsers.value.find((item) => {
-      if(item.gmail == gmailValue)
+      if(item.gmail === gmailValue)
         return item.nome
     })
 

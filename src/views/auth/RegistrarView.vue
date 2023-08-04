@@ -117,7 +117,7 @@ onMounted(async () => {
     snapshot.forEach((user) => {
       const obj = {
         id: user.id,
-         nome: user.data().nome,
+        nome: user.data().nome,
         gmail: user.data().gmail,
         senha: user.data().senha
       }

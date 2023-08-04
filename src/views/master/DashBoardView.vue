@@ -159,6 +159,15 @@ const logout = () => {
 
 let isDrawer = ref(true)
 
+const currentWidth = () => {
+  if(window.innerWidth >= 768)
+    return isDrawer.value = true
+  return isDrawer.value = false
+}
+
+onMounted(() => {
+  currentWidth()
+})
 // sign out of account
 
 let stateConfirmModal = ref(false)

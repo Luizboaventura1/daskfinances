@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app theme="dark">
     <header>
       <v-container>
         <nav class="d-flex">
@@ -16,7 +16,6 @@
               <li class="px-2">
                 <v-btn
                   v-if="hasAccount"
-                  variant="outlined"
                   class="to-enter font-weight-bold"
                   to="/painel"
                 >
@@ -221,15 +220,14 @@ const router = useRouter();
 const store = useStore();
 
 const linkPagina = () => {
-  if (store.state.token.tokenOn) {
-    router.push('/painel')
-  }else {
-    router.push('/auth/registrar')
-  }
+  if (store.state.token.tokenOn) 
+    return router.push('/painel')
+
+  return router.push('/auth/registrar')
 }
 
 onMounted(() => {
-  if(store.state.token.tokenOn == true) {
+  if(store.state.token.tokenOn === true) {
     hasAccount.value = true
     notLogged.value = false
   }
@@ -284,11 +282,11 @@ const testimonials = ref([
         list-style-type: none;
 
         .to-enter {
-          border-color: rgb(0, 157, 255);
-          color: white;
+          background-color: rgb(0, 157, 255);
+          color: rgb(255, 255, 255);
           transition: .3s;
           &:hover {
-            background-color: rgb(0, 157, 255);
+            background-color: rgb(0, 116, 188);
           }
         }
       }
@@ -372,11 +370,11 @@ const testimonials = ref([
   }
 
   .container-cta-app {
-    background-color: #222428;
+    background-image: linear-gradient(to right,#36393e,#222428);
   }
 
   .container-testimonials {
-    background-color: $main-background;
+    background-color: #222428;
     .container-card-testimonials {
       width: 100%;
       height: 100%;
