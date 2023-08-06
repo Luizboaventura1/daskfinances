@@ -49,6 +49,7 @@
 </template>
 
 <script setup>
+import { ref,onMounted } from 'vue'
 
 let bars = ref([])
 let sixMonthIncome = ref([1300,1400, 1450, 1475, 1490,1600,1700])
@@ -92,18 +93,17 @@ const barsPercentage = () => {
 <style lang="scss" scoped>
 .container-chart {
   width: 100%;
-  max-width: 500px;
-  height: 380px;
+  height: 350px;
   //background-color: rgb(40, 38, 42);
   background-image: linear-gradient(to top right,
-  rgb(40, 38, 42),
-  rgb(51, 49, 54));
+  #25272c,
+  #25262b);
 
   .container-header-chart {
     height: 12%;
 
     .box-header-chart {
-      background-color: #4f4d52;
+      background-color: #3d3f45;
     }
   }
 
