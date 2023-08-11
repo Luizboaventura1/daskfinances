@@ -39,10 +39,13 @@
       <div class="edit-transacao d-flex justify-start align-center w-100">
         <v-btn
           @click="transactionEdit(index)"
-          class="bg-blue-accent-4 font-weight-bold text-white"
+          class="bg-blue-accent-4 font-weight-bold text-white me-3"
         >
           Editar
         </v-btn>
+        <DeleteBtn
+          @deleteClick="deleteTransaction(index)"
+        />
       </div>
       </div>
     </div>
@@ -130,17 +133,26 @@
   >
     {{ textPopupPanel }}
   </SuccessPopupPanel>
+  <ConfirmModal
+    @confirmButton="confirmDeleteTransaction"
+    @cancelButton="cancelButton"
+    :stateConfirmModal="stateConfirmModal"
+  >
+    {{ messageConfirmModal }}
+  </ConfirmModal>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, onSnapshot, updateDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
 import CancelBtn from '@/components/Buttons/CancelBtn.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
+import DeleteBtn from '@/components/Buttons/DeleteBtn.vue'
+import ConfirmModal from '../Popups/PanelPopups/ConfirmModal.vue';
 
 const store = useStore()
 
@@ -215,6 +227,30 @@ const alertPopupPanel = (msg) => {
     statePopupPanel.value = false
   },2000)
 }
+
+// Delete Transaction
+
+let messageConfirmModal = ref()
+let stateConfirmModal = ref(false)
+let indexDeleteTransaction = ref()
+
+const deleteTransaction = (index) => {
+  stateConfirmModal.value = true
+  messageConfirmModal.value = 'Deletar transação?'
+  indexDeleteTransaction.value = index
+}
+
+const cancelButton = () => {
+  stateConfirmModal.value = false
+}
+
+const confirmDeleteTransaction = async () => {
+  let docRef = doc(db,'transacoes',transacoes.value.at(indexDeleteTransaction.value).id)
+  await deleteDoc(docRef)
+  
+  stateConfirmModal.value = false
+}
+
 </script>
 
 <style lang="scss" scoped>

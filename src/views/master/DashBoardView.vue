@@ -137,6 +137,7 @@ onMounted(async () => {
       }
     })
     notificationsList.value = notifications
+    console.log(notificationsList.value)
   });
 })
 
@@ -168,6 +169,7 @@ const currentWidth = () => {
 onMounted(() => {
   currentWidth()
 })
+
 // sign out of account
 
 let stateConfirmModal = ref(false)
