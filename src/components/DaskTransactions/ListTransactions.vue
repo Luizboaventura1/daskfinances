@@ -112,18 +112,19 @@
             >
           </div>
         </div>
-        <div class="d-flex pb-4">
+        <div class="container-edit-buttons d-flex justify-space-between pb-4">
           <v-btn
             @click="saveChanges"
-            class="rounded me-2 w-75 bg-green-accent-3"
+            class="rounded me-2 bg-green-accent-3"
           >
             Salvar
           </v-btn>
-          <CancelBtn
+          <v-btn
+            class="rounded bg-red-accent-3"
             @click="stateTransactionModal = false"
           >
             Cancelar
-          </CancelBtn>
+          </v-btn>
         </div>
       </div>
     </div>
@@ -149,7 +150,6 @@ import { db } from '@/firebase'
 import { collection, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
-import CancelBtn from '@/components/Buttons/CancelBtn.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
 import DeleteBtn from '@/components/Buttons/DeleteBtn.vue'
 import ConfirmModal from '../Popups/PanelPopups/ConfirmModal.vue';
@@ -327,6 +327,16 @@ const confirmDeleteTransaction = async () => {
     background-color: #34363c;
     &:focus {
       border-bottom: 1px solid rgb(0, 170, 255);
+    }
+  }
+
+  .container-edit-buttons {
+    .v-btn:nth-of-type(1) {
+      width: 72%;
+    }
+
+    .v-btn:nth-of-type(2) {
+      width: 23%;
     }
   }
 
