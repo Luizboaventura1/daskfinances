@@ -204,6 +204,49 @@
         </v-row>
       </v-container>
     </section>
+    <div class="real-time-users-container py-5">
+      <div class="box-rtu d-flex justify-center">
+        <v-container class="ps-6 ps-sm-0">
+          <v-row>
+            <v-col
+              cols="12"
+              sm="4"
+              class="d-flex justify-start justify-sm-center"
+            >
+            <div class="total-users">
+              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalUsers) }}</h1>
+              <div class="line-rtu my-3"></div>
+              <div class="text-subtitle-2">Usuários na plataforma</div>
+            </div>
+            </v-col>
+
+            <v-col
+              cols="12"
+              sm="4"
+              class="d-flex justify-start justify-sm-center"
+            >
+            <div class="total-users">
+              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalTransactions) }}</h1>
+              <div class="line-rtu my-3"></div>
+              <div class="text-subtitle-2">Transaçõoes</div>
+            </div>
+            </v-col>
+
+            <v-col
+              cols="12"
+              sm="4"
+              class="d-flex justify-start justify-sm-center"
+            >
+            <div class="total-users">
+              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalMovements) }}</h1>
+              <div class="line-rtu my-3"></div>
+              <div class="text-subtitle-2">Movimentado na plataforma</div>
+            </div>
+            </v-col>
+          </v-row>
+        </v-container>
+      </div>
+    </div>
     <FooterHome />
   </v-app>
 </template>
@@ -215,6 +258,8 @@ import { useStore } from 'vuex';
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import FooterHome from '@/components/Footer/FooterHome.vue'
+import { db } from '@/firebase'
+import { collection, onSnapshot} from "firebase/firestore";
 
 const router = useRouter();
 const store = useStore();
@@ -252,6 +297,39 @@ const testimonials = ref([
     text: 'Ótima ferramenta para alcançar metas financeiras importantes.',
   },
 ])
+
+let totalUsers = ref(0)
+let totalTransactions = ref(0)
+let totalMovements = ref(0)
+
+onMounted(async () => {
+  onSnapshot(collection(db, "usuarios"), (snapshot) => {
+    snapshot.forEach(() => {
+      totalUsers.value += 1
+    })
+  });
+
+  onSnapshot(collection(db, "transacoes"), (snapshot) => {
+    snapshot.forEach(() => {
+      totalTransactions.value += 1
+    })
+  });
+
+  onSnapshot(collection(db, "saldo"), (snapshot) => {
+    snapshot.forEach((doc) => {
+      totalMovements.value += doc.data().receita
+    })
+  });
+})
+
+const formatNumber = (number) => {
+  if(number >= 1000) 
+    return `${(parseFloat(number) / 1000).toFixed(0)} mil`
+  else if(number >= 1000000)
+    return `${(parseFloat(number) / 1000000).toFixed(0)} m`
+  else if(number < 1000) 
+    return number
+}
 
 </script>
 
@@ -400,6 +478,23 @@ const testimonials = ref([
           }
         }
       }
+    }
+  }
+
+  .real-time-users-container {
+    background-color: #121213;
+
+    h1 {
+      -webkit-text-fill-color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      background-image: linear-gradient(to top right,rgb(0, 136, 255) 60%,rgb(0, 225, 255));
+    }
+
+    .line-rtu {
+      height: 3px;
+      width: 100%;
+      background-image: linear-gradient(to top right,rgb(0, 136, 255) 60%,rgb(0, 225, 255))
     }
   }
 </style>
