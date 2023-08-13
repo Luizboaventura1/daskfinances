@@ -304,21 +304,30 @@ let totalMovements = ref(0)
 
 onMounted(async () => {
   onSnapshot(collection(db, "usuarios"), (snapshot) => {
-    snapshot.forEach(() => {
-      totalUsers.value += 1
+    let sum = []
+    snapshot.forEach((doc) => {
+      sum.push(doc.id)
     })
+
+    totalUsers.value = sum.length
   });
 
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
-    snapshot.forEach(() => {
-      totalTransactions.value += 1
+    let sum = []
+    snapshot.forEach((doc) => {
+      sum.push(doc.id)
     })
+
+    totalTransactions.value = sum.length
   });
 
   onSnapshot(collection(db, "saldo"), (snapshot) => {
+    let sum = []
     snapshot.forEach((doc) => {
-      totalMovements.value += doc.data().receita
+      sum.push(doc.data().receita)
     })
+
+    totalMovements.value = sum.reduce((a,o) => a + o)
   });
 })
 

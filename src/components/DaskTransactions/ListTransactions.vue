@@ -1,55 +1,57 @@
 <template>
-    <div class="lista-transacoes w-100">
+  <div class="lista-transacoes w-100">
     <div class="ma-3">
       <h1 class="text-h6 font-weight-bold text-white mb-5">Transações</h1>
     </div>
-    <div class="nome-itens-lista d-flex align-center px-3 ma-3 rounded elevation-6">
-      <div class="w-25">
-        <span class="text-white font-weight-regular">Transação</span>
+    <div class="min-scroll-transactions">
+      <div class="nome-itens-lista d-flex align-center px-3 ma-3 rounded elevation-6">
+        <div class="w-25">
+          <span class="text-white font-weight-regular">Transação</span>
+        </div>
+        <div class="w-25">
+          <span class="text-white font-weight-regular">Valor</span>
+        </div>
+        <div class="w-25">
+          <span class="text-white font-weight-regular">Data</span>
+        </div>
+        <div class="w-25">
+          <span class="text-white font-weight-regular">Tipo</span>
+        </div>
       </div>
-      <div class="w-25">
-        <span class="text-white font-weight-regular">Valor</span>
+      <div class="container-transacoes">
+        <div
+        v-for="(transacao,index) in transacoes"
+        :key="transacao"
+        class="transacao-single px-3 mx-3">
+        <div class="info-transacao w-100 d-flex align-center">
+          <div class="w-25">
+            <span class="text-white font-weight-regular">{{transacao.nome}}</span>
+          </div>
+          <div class="w-25">
+            <span class="text-white font-weight-regular">R$ {{parseFloat(transacao.valor).toFixed(2).replace('.',',')}}</span>
+          </div>
+          <div class="w-25">
+            <span class="text-white font-weight-regular">{{transacao.data}}</span>
+          </div>
+          <div class="w-25">
+            <span class="text-white font-weight-regular">{{transacao.tipo}}</span>
+          </div>
+        </div>
+        <div class="edit-transacao d-flex justify-start align-center w-100">
+          <v-btn
+            @click="transactionEdit(index)"
+            class="bg-blue-accent-4 font-weight-bold text-white me-3"
+          >
+            Editar
+          </v-btn>
+          <DeleteBtn
+            @deleteClick="deleteTransaction(index)"
+          />
+        </div>
+        </div>
       </div>
-      <div class="w-25">
-        <span class="text-white font-weight-regular">Data</span>
-      </div>
-      <div class="w-25">
-        <span class="text-white font-weight-regular">Tipo</span>
-      </div>
+        </div>
     </div>
-    <div class="container-transacoes">
-      <div
-      v-for="(transacao,index) in transacoes"
-      :key="transacao"
-      class="transacao-single px-3 mx-3">
-      <div class="info-transacao w-100 d-flex align-center">
-        <div class="w-25">
-          <span class="text-white font-weight-regular">{{transacao.nome}}</span>
-        </div>
-        <div class="w-25">
-          <span class="text-white font-weight-regular">R$ {{parseFloat(transacao.valor).toFixed(2).replace('.',',')}}</span>
-        </div>
-        <div class="w-25">
-          <span class="text-white font-weight-regular">{{transacao.data}}</span>
-        </div>
-        <div class="w-25">
-          <span class="text-white font-weight-regular">{{transacao.tipo}}</span>
-        </div>
-      </div>
-      <div class="edit-transacao d-flex justify-start align-center w-100">
-        <v-btn
-          @click="transactionEdit(index)"
-          class="bg-blue-accent-4 font-weight-bold text-white me-3"
-        >
-          Editar
-        </v-btn>
-        <DeleteBtn
-          @deleteClick="deleteTransaction(index)"
-        />
-      </div>
-      </div>
-    </div>
-  </div>
   <div
     v-if="stateTransactionModal"
     class="modal-transaction-edit pa-3 d-flex justify-center align-center"
@@ -255,6 +257,10 @@ const confirmDeleteTransaction = async () => {
 
 <style lang="scss" scoped>
 .lista-transacoes {
+  overflow-x: auto;
+  .min-scroll-transactions {
+    min-width: 500px;
+  }
     .nome-itens-lista {
       background-color: #4f5258;
       height: 50px;
@@ -262,7 +268,7 @@ const confirmDeleteTransaction = async () => {
     }
 
     .container-transacoes {
-      overflow-x: auto;
+      
       .transacao-single {
         min-width: 500px;
         background-color: #25272c;
