@@ -206,7 +206,7 @@
     </section>
     <div class="real-time-users-container py-5">
       <div class="box-rtu d-flex justify-center">
-        <v-container class="ps-6 ps-sm-0">
+        <v-container class="ps-12 ps-sm-0">
           <v-row>
             <v-col
               cols="12"
@@ -214,9 +214,9 @@
               class="d-flex justify-start justify-sm-center"
             >
             <div class="total-users">
-              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalUsers) }}</h1>
+              <h1 class="text-h3 text-sm-h2 font-weight-bold">+{{ formatNumber(totalUsers) }}</h1>
               <div class="line-rtu my-3"></div>
-              <div class="text-subtitle-2">Usuários na plataforma</div>
+              <div class="text-subtitle-2 text-white">Usuários na plataforma</div>
             </div>
             </v-col>
 
@@ -226,9 +226,9 @@
               class="d-flex justify-start justify-sm-center"
             >
             <div class="total-users">
-              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalTransactions) }}</h1>
+              <h1 class="text-h3 text-sm-h2 font-weight-bold">+{{ formatNumber(totalTransactions) }}</h1>
               <div class="line-rtu my-3"></div>
-              <div class="text-subtitle-2">Transaçõoes</div>
+              <div class="text-subtitle-2 text-white">Transaçõoes</div>
             </div>
             </v-col>
 
@@ -238,9 +238,9 @@
               class="d-flex justify-start justify-sm-center"
             >
             <div class="total-users">
-              <h1 class="text-h2 font-weight-bold">+{{ formatNumber(totalMovements) }}</h1>
+              <h1 class="text-h3 text-sm-h2 font-weight-bold">+{{ formatNumber(totalMovements) }}</h1>
               <div class="line-rtu my-3"></div>
-              <div class="text-subtitle-2">Movimentado na plataforma</div>
+              <div class="text-subtitle-2 text-white">Movimentado na plataforma</div>
             </div>
             </v-col>
           </v-row>
@@ -488,13 +488,13 @@ const formatNumber = (number) => {
       -webkit-text-fill-color: transparent;
       -webkit-background-clip: text;
       background-clip: text;
-      background-image: linear-gradient(to top right,rgb(0, 136, 255) 60%,rgb(0, 225, 255));
+      background-image: linear-gradient(to top right,rgb(0, 136, 255) 45%,rgb(0, 225, 255));
     }
 
     .line-rtu {
       height: 3px;
       width: 100%;
-      background-image: linear-gradient(to top right,rgb(0, 136, 255) 60%,rgb(0, 225, 255))
+      background-image: linear-gradient(to top right,rgb(0, 136, 255) 45%,rgb(0, 225, 255))
     }
   }
 </style>
