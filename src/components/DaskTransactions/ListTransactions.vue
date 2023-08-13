@@ -264,7 +264,7 @@ const confirmDeleteTransaction = async () => {
     .nome-itens-lista {
       background-color: #4f5258;
       height: 50px;
-      min-width: 400px;
+      min-width: 500px;
     }
 
     .container-transacoes {
