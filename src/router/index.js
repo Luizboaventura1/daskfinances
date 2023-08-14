@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import store from '@/store'
 
 const routes = [
   {
@@ -21,6 +22,13 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('@/views/master/DashBoardView.vue'),
+    beforeEnter: (to, from, next) => {
+      if (store.state.token.tokenOn) 
+        return next()
+       else 
+        return next('/auth/registrar')
+    },
+
     children: [
       {
         path: '/perfil',
