@@ -210,7 +210,7 @@
           <v-row>
             <v-col
               cols="12"
-              sm="4"
+              sm="6"
               class="d-flex justify-start justify-sm-center"
             >
             <div class="total-users">
@@ -222,25 +222,13 @@
 
             <v-col
               cols="12"
-              sm="4"
+              sm="6"
               class="d-flex justify-start justify-sm-center"
             >
             <div class="total-users">
               <h1 class="text-h3 text-sm-h2 font-weight-bold">+{{ formatNumber(totalTransactions) }}</h1>
               <div class="line-rtu my-3"></div>
               <div class="text-subtitle-2 text-white">Transaçõoes</div>
-            </div>
-            </v-col>
-
-            <v-col
-              cols="12"
-              sm="4"
-              class="d-flex justify-start justify-sm-center"
-            >
-            <div class="total-users">
-              <h1 class="text-h3 text-sm-h2 font-weight-bold">+{{ formatNumber(totalMovements) }}</h1>
-              <div class="line-rtu my-3"></div>
-              <div class="text-subtitle-2 text-white">Movimentado na plataforma</div>
             </div>
             </v-col>
           </v-row>
