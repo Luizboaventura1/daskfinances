@@ -137,7 +137,6 @@ onMounted(async () => {
       }
     })
     notificationsList.value = notifications
-    console.log(notificationsList.value)
   });
 })
 
