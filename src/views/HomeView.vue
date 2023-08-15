@@ -300,7 +300,6 @@ const testimonials = ref([
 
 let totalUsers = ref(0)
 let totalTransactions = ref(0)
-let totalMovements = ref(0)
 
 onMounted(async () => {
   onSnapshot(collection(db, "usuarios"), (snapshot) => {
@@ -319,15 +318,6 @@ onMounted(async () => {
     })
 
     totalTransactions.value = sum.length
-  });
-
-  onSnapshot(collection(db, "saldo"), (snapshot) => {
-    let sum = []
-    snapshot.forEach((doc) => {
-      sum.push(doc.data().receita)
-    })
-
-    totalMovements.value = sum.reduce((a,o) => a + o)
   });
 })
 

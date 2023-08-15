@@ -24,10 +24,10 @@
         :key="transacao"
         class="transacao-single px-3 mx-3">
         <div class="info-transacao w-100 d-flex align-center">
-          <div class="w-25">
+          <div class="w-25 overflow-hidden">
             <span class="text-white font-weight-regular">{{transacao.nome}}</span>
           </div>
-          <div class="w-25">
+          <div class="w-25 overflow-hidden">
             <span class="text-white font-weight-regular">R$ {{parseFloat(transacao.valor).toFixed(2).replace('.',',')}}</span>
           </div>
           <div class="w-25">
