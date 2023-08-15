@@ -11,6 +11,7 @@
               class="text-white w-100 border-0 pa-2 rounded"
               type="email"
               placeholder="Seu email"
+              prepend-inner-icon="mdi-email-outline"
               :rules="emailRules"
               variant="outlined"
             ></v-text-field>
@@ -20,9 +21,12 @@
               label="Senha"
               v-model="senha"
               class="text-white w-100 border-0 pa-2 rounded"
-              type="password"
               placeholder="Sua senha"
               :rules="passwordRules"
+              prepend-inner-icon="mdi-lock-outline"
+              @click:append-inner="visiblePassword = !visiblePassword"
+              :append-inner-icon="visiblePassword ? 'mdi-eye-off' : 'mdi-eye'"
+              :type="visiblePassword ? 'text' : 'password'"
               variant="outlined"
             ></v-text-field>
           </div>
@@ -161,35 +165,64 @@ const alertPopupPanel = (msg) => {
 
 // Rules login
 
+let validationGmail = ref(false)
+let validationPassword = ref(false)
+
 const emailRules = [
-    value => {
-      if(value)
-        return true
+  value => {
+    if(value)
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
       return 'Email obrigatório!'
-    },
-    value => {
-      if(value.includes('@'))
-        return true
+  },
+  value => {
+    if(value.includes('@') && !value.includes(' ') && value.split('@').length == 2 && value.split('@')[1].trim() != '')
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
       return 'Email inválido!'
-    },
-  ]
+  },
+  value => {
+    if(value.length <= 50)
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
+      return 'Máximo 50 caracteres!'
+  }
+]
 
 const passwordRules = [
   value => {
     if(value)
-      return true
-    return 'Senha obrigatória!'
+      return validationPassword.value = true
+    else
+      validationPassword.value = false
+      return 'Senha obrigatória!'
+  },
+  value => {
+    if(value.length >= 8)
+      return validationPassword.value = true
+    else
+    validationPassword.value = false
+      return 'Minimo 8 caracteres'
+  },
+  value => {
+    if(value.length <= 50)
+      return validationPassword.value = true
+    else
+    validationPassword.value = false
+      return 'Máximo 50 caracteres'
   }
 ]
 
 const confirmRules = () => {
-  if(
-    emailRules[0] && emailRules[1] &&
-    passwordRules[0]
-  ) return true
-
+  if(validationGmail.value && validationPassword.value)
+    return true
   return false
 }
+
+let visiblePassword = ref()
 
 </script>
 

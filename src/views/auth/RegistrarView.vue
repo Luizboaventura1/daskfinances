@@ -13,6 +13,7 @@
             type="email"
             placeholder="Primeiro nome"
             :rules="nameRules"
+            prepend-inner-icon="mdi-account-outline"
             variant="outlined"
           ></v-text-field>
         </div>
@@ -26,6 +27,7 @@
             type="email"
             placeholder="Seu email"
             :rules="emailRules"
+            prepend-inner-icon="mdi-email-outline"
             variant="outlined"
           ></v-text-field>
         </div>
@@ -36,9 +38,12 @@
             required
             v-model="senha"
             class="text-white w-100 border-0 pa-2 rounded"
-            type="password"
             placeholder="Sua senha"
             :rules="passwordRules"
+            prepend-inner-icon="mdi-lock-outline"
+            @click:append-inner="visiblePassword = !visiblePassword"
+            :append-inner-icon="visiblePassword ? 'mdi-eye-off' : 'mdi-eye'"
+            :type="visiblePassword ? 'text' : 'password'"
             variant="outlined"
           ></v-text-field>
         </div>
@@ -93,20 +98,7 @@ import { useRouter } from 'vue-router';
 import { onMounted } from 'vue';
 import { useStore } from 'vuex';
 import AlertPopupPanel from '@/components/Popups/PanelPopups/AlertPopupPanel.vue';
-//import { getAuth,createUserWithEmailAndPassword } from 'firebase/auth';
 
-/* Auth
-const auth = getAuth()
-
-const registerUser = () => {
-  createUserWithEmailAndPassword(auth,'luiz2123@gmail.com','233784').then(user => {
-    console.log(user.user)
-  }).catch(error => [
-    console.log(error)
-  ])
-}
-*/
-//==================================
 
 const store = useStore()
 
@@ -138,8 +130,7 @@ const registrarUsuario = () => {
   let gmailValue = gmail.value.trim()
   let senhaValue = senha.value.trim()
 
-  if(confirmRules) {
-
+  if(confirmRules()) {
     let verificarSeAContaExiste = AllUsers.value.some(user => user.gmail.startsWith(gmailValue))
     
     if(!verificarSeAContaExiste) {
@@ -189,54 +180,91 @@ const alertPopupPanel = (msg) => {
 
 // Rules login
 
-const nameRules = ref([
+let validationName = ref(false)
+let validationGmail = ref(false)
+let validationPassword = ref(false)
+
+const nameRules = [
   value => {
-    if(value)
-      return true
-    return 'Senha obrigatória!'
+    if(value) 
+      return validationName.value = true
+    else 
+      validationName.value = false
+      return 'Senha obrigatória!'
   },
   value => {
     if(value.length >= 3) 
-      return true
-    return 'Minimo 3 letras'
+      return validationName.value = true
+    else 
+      validationName.value = false
+      return 'Mínimo 3 letras'
+  },
+  value => {
+    if(value.length <= 50) 
+      return validationName.value = true
+    else 
+      validationName.value = false
+      return 'Máximo 50 caracteres!'
   }
-])
+]
 
-const emailRules = ref([
+const emailRules = [
   value => {
     if(value)
-      return true
-    return 'Email obrigatório!'
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
+      return 'Email obrigatório!'
   },
   value => {
-    if(value.includes('@'))
-      return true
-    return 'Email inválido!'
+    if(value.includes('@') && !value.includes(' ') && value.split('@').length == 2 && value.split('@')[1].trim() != '')
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
+      console.log(value.split('@').length)
+      return 'Email inválido!'
   },
-])
+  value => {
+    if(value.length <= 50)
+      return validationGmail.value = true
+    else
+      validationGmail.value = false
+      return 'Máximo 50 caracteres!'
+  }
+]
 
-const passwordRules = ref([
+const passwordRules = [
   value => {
     if(value)
-      return true
-    return 'Senha obrigatória!'
+      return validationPassword.value = true
+    else
+      validationPassword.value = false
+      return 'Senha obrigatória!'
   },
   value => {
     if(value.length >= 8)
-      return true
-    return 'Minimo 8 caracteres'
+      return validationPassword.value = true
+    else
+    validationPassword.value = false
+      return 'Minimo 8 caracteres'
+  },
+  value => {
+    if(value.length <= 50)
+      return validationPassword.value = true
+    else
+    validationPassword.value = false
+      return 'Máximo 50 caracteres'
   }
-])
+]
 
 const confirmRules = () => {
-  if(
-    nameRules.value[0] && nameRules.value[1] &&
-    emailRules.value[0] && emailRules.value[1] &&
-    passwordRules.value[0] && passwordRules.value[1]
-  ) return true
-
+  if(validationName.value && validationGmail.value && validationPassword.value)
+    return true
   return false
 }
+
+
+let visiblePassword = ref()
 
 </script>
 
