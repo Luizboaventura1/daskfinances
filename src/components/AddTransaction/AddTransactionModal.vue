@@ -20,7 +20,7 @@
           v-model="valorTransacao"
           class="input-transaction text-white w-100 border-0 px-2 py-3 rounded mb-4"
           placeholder="Valor da transação"
-          @input="validadeInput"
+          @input="validateInput"
           maxlength="14"
         >
         <input
@@ -83,6 +83,8 @@ import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel
 import { defineProps } from 'vue'
 import { onMounted } from 'vue';
 
+const store = useStore()
+
 // Adicionar nova transação
 
 let nomeTransacao = ref('')
@@ -90,41 +92,41 @@ let valorTransacao = ref('')
 let dataTransacao = ref('')
 let tipoTransacao = ref('')
 
-const store = useStore()
-
 const addTransacao = () => {
 
-  if(noSpaces()) {
-    
-    addDoc(collection(db, "transacoes"), {
-      idUser: store.state.token.id,
-      nome: nomeTransacao.value,
-      valor: valorTransacao.value,
-      data: dataTransacao.value.replace(/-/g,'/'),
-      tipo: tipoTransacao.value,
-    });
+if(noSpaces()) {
+  
+  addDoc(collection(db, "transacoes"), {
+    idUser: store.state.token.id,
+    nome: nomeTransacao.value,
+    valor: valorTransacao.value,
+    data: dataTransacao.value.replace(/-/g,'/'),
+    tipo: tipoTransacao.value,
+  });
 
-    const saldoDocRef = doc(db, 'saldo', idSaldoCollection.value);
+  const saldoDocRef = doc(db, 'saldo', idSaldoCollection.value);
 
-    if (tipoTransacao.value === "receita") {
-      updateDoc(saldoDocRef, {
-        saldo: saldoUser.value += parseInt(valorTransacao.value),
-        receita: receitaUser.value += parseInt(valorTransacao.value)
-      })
-    }else {
-      updateDoc(saldoDocRef, {
-        saldo: saldoUser.value -= parseInt(valorTransacao.value),
-        gasto: gastoUser.value += parseInt(valorTransacao.value)
-      })
-    }
-
-    successPopup('Transação conluída!')
-
-    clearInputs()
+  if (tipoTransacao.value === "receita") {
+    updateDoc(saldoDocRef, {
+    saldo: saldoUser.value += parseInt(valorTransacao.value),
+    receita: receitaUser.value += parseInt(valorTransacao.value)
+    })
   }else {
-    alertPopupPanel('Preencha os campos!')
+    updateDoc(saldoDocRef, {
+    saldo: saldoUser.value -= parseInt(valorTransacao.value),
+    gasto: gastoUser.value += parseInt(valorTransacao.value)
+    })
   }
+
+  successPopup('Transação conluída!')
+  clearInputs()
+}else {
+  alertPopupPanel('Preencha os campos!')
 }
+}
+
+
+// Mostrar dados de saldo
 
 let saldoUser = ref(0)
 let receitaUser = ref(0)
@@ -134,6 +136,7 @@ let idSaldoCollection = ref()
 onMounted(async () => {
   onSnapshot(collection(db, "saldo"), (snapshot) => {
     snapshot.forEach((docUser) => {
+      console.log(docUser)
       if(store.state.token.id === docUser.data().idUser) {
         saldoUser.value = docUser.data().saldo
         receitaUser.value = docUser.data().receita
@@ -145,7 +148,7 @@ onMounted(async () => {
   });
 })
 
-const validadeInput = (() => {
+const validateInput = (() => {
   valorTransacao.value = valorTransacao.value.replace(/[^0-9.]/g, "")
 })
 

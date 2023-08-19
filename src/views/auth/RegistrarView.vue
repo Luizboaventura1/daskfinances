@@ -217,7 +217,7 @@ const emailRules = [
       return 'Email obrigatório!'
   },
   value => {
-    if(value.includes('@') && !value.includes(' ') && value.split('@').length == 2 && value.split('@')[1].trim() != '')
+    if(value.includes('@') && !value.includes(' ') && value.split('@').length == 2 && value.split('@')[1].trim() != '' && value.split('@')[0].trim() != '')
       return validationGmail.value = true
     else
       validationGmail.value = false
