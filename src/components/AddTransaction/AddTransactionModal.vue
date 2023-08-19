@@ -77,7 +77,7 @@
 import { ref } from 'vue'
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, addDoc, updateDoc, onSnapshot,doc} from "firebase/firestore";
+import { collection, /*addDoc updateDoc*/ onSnapshot,/*doc*/} from "firebase/firestore";
 import AlertPopupPainel from "@/components/Popups/PanelPopups/AlertPopupPanel.vue";
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue';
 import { defineProps } from 'vue'
@@ -96,42 +96,40 @@ const addTransacao = () => {
 
 if(noSpaces()) {
   
-  addDoc(collection(db, "transacoes"), {
+  /*addDoc(collection(db, "transacoes"), {
     idUser: store.state.token.id,
     nome: nomeTransacao.value,
     valor: valorTransacao.value,
     data: dataTransacao.value.replace(/-/g,'/'),
     tipo: tipoTransacao.value,
-  });
+  });*/
 
-  const saldoDocRef = doc(db, 'saldo', idSaldoCollection.value);
+  /*const saldoDocRef = ref('')
 
-  if (tipoTransacao.value === "receita") {
-    updateDoc(saldoDocRef, {
-    saldo: saldoUser.value += parseInt(valorTransacao.value),
-    receita: receitaUser.value += parseInt(valorTransacao.value)
-    })
-  }else {
-    updateDoc(saldoDocRef, {
-    saldo: saldoUser.value -= parseInt(valorTransacao.value),
-    gasto: gastoUser.value += parseInt(valorTransacao.value)
-    })
+  if(typeof idSaldoCollection.value === 'string') {
+
+    saldoDocRef.value = doc(db, 'saldo', idSaldoCollection.value);
+
+    if (tipoTransacao.value === "receita") {
+      updateDoc(saldoDocRef.value, {
+        saldo: saldoUser.value += parseInt(valorTransacao.value),
+        receita: receitaUser.value += parseInt(valorTransacao.value)
+      })
+    }else {
+      updateDoc(saldoDocRef.value, {
+        saldo: saldoUser.value -= parseInt(valorTransacao.value),
+        gasto: gastoUser.value += parseInt(valorTransacao.value)
+      })
+    }
   }
-
+*/
   successPopup('Transação conluída!')
+  
   clearInputs()
-}else {
-  alertPopupPanel('Preencha os campos!')
+  }else {
+    alertPopupPanel('Preencha os campos!')
+  }
 }
-}
-
-
-// Mostrar dados de saldo
-
-let saldoUser = ref(0)
-let receitaUser = ref(0)
-let gastoUser = ref(0)
-let idSaldoCollection = ref()
 
 onMounted(async () => {
   onSnapshot(collection(db, "saldo"), (snapshot) => {
@@ -145,8 +143,16 @@ onMounted(async () => {
         idSaldoCollection.value = docUser.id
       }
     })
-  });
+  })
 })
+
+// Mostrar dados de saldo
+
+let saldoUser = ref(0)
+let receitaUser = ref(0)
+let gastoUser = ref(0)
+let idSaldoCollection = ref()
+
 
 const validateInput = (() => {
   valorTransacao.value = valorTransacao.value.replace(/[^0-9.]/g, "")
@@ -165,9 +171,9 @@ const noSpaces = (() => {
 })
 
 const clearInputs = () => {
-  nomeTransacao.value = ref('')
-  valorTransacao.value = ref('')
-  dataTransacao.value = ref('')
+  nomeTransacao.value = ref()
+  valorTransacao.value = ref(0)
+  dataTransacao.value = ref()
   tipoTransacao.value = ref('')
 }
 
