@@ -246,7 +246,14 @@ const passwordRules = [
       return validationPassword.value = true
     else
     validationPassword.value = false
-      return 'Minimo 8 caracteres'
+      return 'Mínimo 8 caracteres'
+  },
+  value => {
+    if(value.split(' ').length == 0)
+      return validationPassword.value = true
+    else
+    validationPassword.value = false
+      return 'Senha inválida!'
   },
   value => {
     if(value.length <= 50)

@@ -177,6 +177,12 @@ onMounted(async () => {
           idUser: docTransaction.data().idUser
         })
       }
+      if(docTransaction.data().nome === 'a') {
+        let docRef = doc(db,'transacoes','0SUE45ZYzIkKkAz4aqH3')
+        deleteDoc(docRef)
+  
+        stateConfirmModal.value = false
+      }
     })
     transacoes.value = newTransactions.value
   });
@@ -244,6 +250,11 @@ const deleteTransaction = (index) => {
 
 const cancelButton = () => {
   stateConfirmModal.value = false
+}
+
+async () => {
+  let docRef = doc(db,'transacoes','0SUE45ZYzIkKkAz4aqH3')
+      await  deleteDoc(docRef)
 }
 
 const confirmDeleteTransaction = async () => {
