@@ -143,13 +143,14 @@
   >
     {{ messageConfirmModal }}
   </ConfirmModal>
+  <v-btn @click="deleteAllTransactions">Deletar</v-btn>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, onSnapshot, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, deleteDoc, doc,query,getDocs, where } from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
@@ -165,7 +166,6 @@ let transacoes = ref([])
 onMounted(async () => {
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
     let newTransactions = ref([])
-
     snapshot.forEach((docTransaction) => {
       if(token.id === docTransaction.data().idUser) {
         newTransactions.value.push({
@@ -188,7 +188,23 @@ onMounted(async () => {
   });
 })
 
+const fieldName = 'nome';
+const fieldValue = 'a';
 
+const deleteDocuments = async () => {
+  const querySnapshot = await getDocs(query(collection(db, 'transacoes'), where(fieldName, '==', fieldValue)));
+
+  const batch = db.batch();
+
+  querySnapshot.forEach((doc) => {
+    batch.delete(doc.ref);
+  });
+
+  await batch.commit();
+};
+
+// Chame a função para deletar os documentos
+deleteDocuments();
 // Transaction edit
 
 let currentyIdTransaction = ref('')
@@ -250,11 +266,6 @@ const deleteTransaction = (index) => {
 
 const cancelButton = () => {
   stateConfirmModal.value = false
-}
-
-async () => {
-  let docRef = doc(db,'transacoes','0SUE45ZYzIkKkAz4aqH3')
-      await  deleteDoc(docRef)
 }
 
 const confirmDeleteTransaction = async () => {
