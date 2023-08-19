@@ -143,14 +143,13 @@
   >
     {{ messageConfirmModal }}
   </ConfirmModal>
-  <v-btn @click="deleteAllTransactions">Deletar</v-btn>
 </template>
 
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, onSnapshot, updateDoc, deleteDoc, doc,query,getDocs, where } from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, deleteDoc, doc/*,query,getDocs, where */} from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
@@ -188,7 +187,7 @@ onMounted(async () => {
   });
 })
 
-const fieldName = 'nome';
+/*const fieldName = 'nome';
 const fieldValue = 'a';
 
 const deleteDocuments = async () => {
@@ -204,7 +203,7 @@ const deleteDocuments = async () => {
 };
 
 // Chame a função para deletar os documentos
-deleteDocuments();
+deleteDocuments();*/
 // Transaction edit
 
 let currentyIdTransaction = ref('')
