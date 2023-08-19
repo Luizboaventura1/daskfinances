@@ -208,7 +208,7 @@ const passwordRules = [
       return 'Minimo 8 caracteres'
   },
   value => {
-    if(value.split(' ').length == 0)
+    if(value.split(' ').length === 1)
       return validationPassword.value = true
     else
     validationPassword.value = false
