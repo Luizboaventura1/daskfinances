@@ -125,7 +125,7 @@ onMounted(async () => {
   onSnapshot(collection(db, "notifications"), (snapshot) => {
     let notifications = []
     snapshot.forEach((notification) => {
-      if(store.state.token.id === notification.data().idUser) {
+      if(store.state.token.id === notification.data().idUser || notification.data().idUser === 'admin') {
         notifications.push({
           id: notification.id,
           icon: imgDask,

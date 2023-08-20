@@ -143,6 +143,7 @@
   >
     {{ messageConfirmModal }}
   </ConfirmModal>
+  <!--<v-btn @click="sendMessage">Send</v-btn>-->
 </template>
 
 <script setup>
@@ -155,6 +156,16 @@ import CloseButton from '@/components/Buttons/CloseButton.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
 import DeleteBtn from '@/components/Buttons/DeleteBtn.vue'
 import ConfirmModal from '../Popups/PanelPopups/ConfirmModal.vue';
+
+/*const sendMessage = () => {
+  addDoc(collection(db, "notifications"), {
+            title: 'DaskFinances',
+            text: 'Saldo e transações resetadas.',
+            date: String(new Date()),
+            link: '/',
+            unread: true
+          });
+}*/
 
 const store = useStore()
 
