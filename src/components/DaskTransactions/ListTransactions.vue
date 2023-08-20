@@ -149,7 +149,7 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex'
 import { db } from '@/firebase'
-import { collection, onSnapshot, updateDoc, deleteDoc, doc/*,query,getDocs, where */} from "firebase/firestore";
+import { collection, onSnapshot, updateDoc, deleteDoc, doc} from "firebase/firestore";
 import { onMounted } from 'vue';
 import CloseButton from '@/components/Buttons/CloseButton.vue'
 import SuccessPopupPanel from '@/components/Popups/PanelPopups/SuccessPopupPanel.vue'
@@ -186,25 +186,6 @@ onMounted(async () => {
     transacoes.value = newTransactions.value
   });
 })
-
-/*const fieldName = 'nome';
-const fieldValue = 'a';
-
-const deleteDocuments = async () => {
-  const querySnapshot = await getDocs(query(collection(db, 'transacoes'), where(fieldName, '==', fieldValue)));
-
-  const batch = db.batch();
-
-  querySnapshot.forEach((doc) => {
-    batch.delete(doc.ref);
-  });
-
-  await batch.commit();
-};
-
-// Chame a função para deletar os documentos
-deleteDocuments();*/
-// Transaction edit
 
 let currentyIdTransaction = ref('')
 
