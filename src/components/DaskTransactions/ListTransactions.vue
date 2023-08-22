@@ -160,6 +160,9 @@ const store = useStore()
 let token = store.state.token
 
 let transacoes = ref([])
+let balance = ref({})
+let transactionTemp = ref([])
+
 
 onMounted(async () => {
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
@@ -174,15 +177,37 @@ onMounted(async () => {
           data: docTransaction.data().data,
           idUser: docTransaction.data().idUser
         })
-      }
-      if(docTransaction.data().nome === 'a') {
-        let docRef = doc(db,'transacoes','0SUE45ZYzIkKkAz4aqH3')
-        deleteDoc(docRef)
-  
-        stateConfirmModal.value = false
+
+        transactionTemp.value.push({
+          id: docTransaction.id,
+          nome: docTransaction.data().nome,
+          valor: docTransaction.data().valor,
+          tipo: docTransaction.data().tipo,
+          data: docTransaction.data().data,
+          idUser: docTransaction.data().idUser
+        })
       }
     })
+
     transacoes.value = newTransactions.value
+  });
+})
+
+onMounted(async () => {
+    onSnapshot(collection(db, "saldo"), (snapshot) => {
+    let tempBalance = {}
+    snapshot.forEach((docBalance) => {
+      if(token.id === docBalance.data().idUser) {
+        tempBalance = {
+          balance: docBalance.data().saldo,
+          revenue: docBalance.data().receita,
+          spent: docBalance.data().gasto,
+          idUser: docBalance.data().idUser,
+          id: docBalance.id
+        }
+      }
+    })
+    balance.value = {...tempBalance}
   });
 })
 
@@ -190,13 +215,15 @@ let currentyIdTransaction = ref('')
 
 const transactionEdit = ((index) => {
   currentyIdTransaction.value = transacoes.value[index].id
-
-  stateTransactionModal.value = true
   currentyTransaction.value = {...transacoes.value[index]}
 
+  // Show data in modal
   editName.value = currentyTransaction.value.nome
   editTransactionValue.value = currentyTransaction.value.valor
   editDate.value = currentyTransaction.value.data
+
+  // Open modal
+  stateTransactionModal.value = true
 })
 
 let currentyTransaction = ref({})
@@ -251,8 +278,25 @@ const confirmDeleteTransaction = async () => {
   let docRef = doc(db,'transacoes',transacoes.value.at(indexDeleteTransaction.value).id)
   await deleteDoc(docRef)
   
+  // Update balance
+
+  const balanceDocRef = doc(db, 'saldo', balance.value.id);
+
+  if (transactionTemp.value.at(indexDeleteTransaction.value).tipo === 'receita') {
+    updateDoc(balanceDocRef, {
+      saldo: balance.value.balance = Number(balance.value.balance) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
+      receita: balance.value.revenue = Number(balance.value.revenue) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
+    })
+  } else if (transactionTemp.value.at(indexDeleteTransaction.value).tipo === 'gasto') {
+    updateDoc(balanceDocRef, {
+      saldo: balance.value.balance = parseInt(balance.value.balance) + Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
+      gasto: balance.value.spent = parseInt(balance.value.spent) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor)
+    })
+  }
+
   stateConfirmModal.value = false
 }
+
 
 </script>
 
