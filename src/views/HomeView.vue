@@ -310,7 +310,7 @@ const testimonials = ref([
     header {
       main {
         h1 {
-          font-size: 2rem;
+          font-size: 2.5rem;
         }
       }
     }
