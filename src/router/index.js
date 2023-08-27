@@ -19,6 +19,14 @@ const routes = [
     component: () => import('@/views/auth/RegistrarView.vue')
   },
   {
+    path: '/privacy-policy',
+    component: () => import('@/views/PrivacyPolicy.vue')
+  },
+  {
+    path: '/terms',
+    component: () => import('@/views/TermsView.vue')
+  },
+  {
     path: '/dashboard',
     name: 'dashboard',
     component: () => import('@/views/master/DashBoardView.vue'),
