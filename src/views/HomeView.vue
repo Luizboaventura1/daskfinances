@@ -36,7 +36,7 @@
         <main class="d-flex align-center">
           <div class="w-50">
             <div>
-              <h1 data-aos="fade-left" class="text-white">Controle melhor <span class="line-headline">suas</span> <span class="line-headline">finanças</span> conosco!</h1>
+              <h1 class="text-white">Controle melhor <span class="line-headline">suas</span> <span class="line-headline">finanças</span> conosco!</h1>
               <p class="text-grey-lighten-2 mb-12">Sistema completo,rápido e moderno.</p>
               <BtnLoginNav
                 @click="linkPagina()"
@@ -302,6 +302,16 @@ const testimonials = ref([
       .line-headline {
         text-decoration: underline;
         text-decoration-color: rgb(0, 179, 255);
+      }
+    }
+  }
+
+  @media screen and (max-width: 466px) {
+    header {
+      main {
+        h1 {
+          font-size: 2rem;
+        }
       }
     }
   }
