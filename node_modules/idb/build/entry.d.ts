@@ -6,19 +6,28 @@ export interface OpenDBCallbacks<DBTypes extends DBSchema | unknown> {
      * @param database A database instance that you can use to add/remove stores and indexes.
      * @param oldVersion Last version of the database opened by the user.
      * @param newVersion Whatever new version you provided.
-     * @param transaction The transaction for this upgrade. This is useful if you need to get data
-     * from other stores as part of a migration.
+     * @param transaction The transaction for this upgrade.
+     * This is useful if you need to get data from other stores as part of a migration.
+     * @param event The event object for the associated 'upgradeneeded' event.
      */
-    upgrade?(database: IDBPDatabase<DBTypes>, oldVersion: number, newVersion: number | null, transaction: IDBPTransaction<DBTypes, StoreNames<DBTypes>[], 'versionchange'>): void;
+    upgrade?(database: IDBPDatabase<DBTypes>, oldVersion: number, newVersion: number | null, transaction: IDBPTransaction<DBTypes, StoreNames<DBTypes>[], 'versionchange'>, event: IDBVersionChangeEvent): void;
     /**
      * Called if there are older versions of the database open on the origin, so this version cannot
      * open.
+     *
+     * @param currentVersion Version of the database that's blocking this one.
+     * @param blockedVersion The version of the database being blocked (whatever version you provided to `openDB`).
+     * @param event The event object for the associated `blocked` event.
      */
-    blocked?(): void;
+    blocked?(currentVersion: number, blockedVersion: number | null, event: IDBVersionChangeEvent): void;
     /**
      * Called if this connection is blocking a future version of the database from opening.
+     *
+     * @param currentVersion Version of the open database (whatever version you provided to `openDB`).
+     * @param blockedVersion The version of the database that's being blocked.
+     * @param event The event object for the associated `versionchange` event.
      */
-    blocking?(): void;
+    blocking?(currentVersion: number, blockedVersion: number | null, event: IDBVersionChangeEvent): void;
     /**
      * Called if the browser abnormally terminates the connection.
      * This is not called when `db.close()` is called.
@@ -36,8 +45,11 @@ export declare function openDB<DBTypes extends DBSchema | unknown = unknown>(nam
 export interface DeleteDBCallbacks {
     /**
      * Called if there are connections to this database open, so it cannot be deleted.
+     *
+     * @param currentVersion Version of the database that's blocking the delete operation.
+     * @param event The event object for the associated `blocked` event.
      */
-    blocked?(): void;
+    blocked?(currentVersion: number, event: IDBVersionChangeEvent): void;
 }
 /**
  * Delete a database.
@@ -45,7 +57,7 @@ export interface DeleteDBCallbacks {
  * @param name Name of the database.
  */
 export declare function deleteDB(name: string, { blocked }?: DeleteDBCallbacks): Promise<void>;
-export { unwrap, wrap } from './wrap-idb-value';
+export { unwrap, wrap } from './wrap-idb-value.js';
 declare type KeyToKeyNoIndex<T> = {
     [K in keyof T]: string extends K ? never : number extends K ? never : K;
 };

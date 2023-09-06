@@ -1,4 +1,4 @@
-import { IDBPCursor, IDBPCursorWithValue, IDBPDatabase, IDBPIndex, IDBPObjectStore, IDBPTransaction } from './entry';
+import { IDBPCursor, IDBPCursorWithValue, IDBPDatabase, IDBPIndex, IDBPObjectStore, IDBPTransaction } from './entry.js';
 export declare const reverseTransformCache: WeakMap<object, any>;
 export declare function replaceTraps(callback: (currentTraps: ProxyHandler<any>) => ProxyHandler<any>): void;
 /**

@@ -12,7 +12,7 @@
     "@mdi/font": "5.9.55",
     "apexcharts": "^3.41.0",
     "core-js": "^3.8.3",
-    "firebase": "^9.21.0",
+    "firebase": "^10.3.1",
     "roboto-fontface": "*",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3",

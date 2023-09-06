@@ -41,7 +41,7 @@ onMounted(async () => {
 })
 
 defineProps({
-  propsBadge: String
+  propsBadge: Object
 })
 
 </script>
