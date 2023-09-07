@@ -61,7 +61,6 @@
 .background {
   background-color: black !important;
   height: 100%;
-  min-height: 100vh;
 }
 
 .back-button {
