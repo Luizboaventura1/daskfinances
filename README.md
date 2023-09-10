@@ -30,4 +30,4 @@ https://daskfinances.vercel.app
 - [Flaticon](https://www.flaticon.com/br/)
 - [Undrawn](https://undraw.co)
 
-*Em desenvolvimento...*
+*O site não está funcionando esses dias em breve estará disponivel*
