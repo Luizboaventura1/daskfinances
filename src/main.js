@@ -4,8 +4,8 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import { loadFonts } from './plugins/webfontloader'
-import FirebaseApp from "firebase/app"
- /*compat*/
+import FirebaseApp from "firebase/compat/app"
+
 loadFonts()
 
 createApp(App)
