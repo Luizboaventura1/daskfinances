@@ -16,9 +16,13 @@ const InnerGraph = require("../optimize/InnerGraph");
 const URLDependency = require("./URLDependency");
 
 /** @typedef {import("estree").NewExpression} NewExpressionNode */
+/** @typedef {import("../../declarations/WebpackOptions").JavascriptParserOptions} JavascriptParserOptions */
 /** @typedef {import("../Compiler")} Compiler */
+/** @typedef {import("../Dependency").DependencyLocation} DependencyLocation */
 /** @typedef {import("../NormalModule")} NormalModule */
 /** @typedef {import("../javascript/JavascriptParser")} JavascriptParser */
+/** @typedef {import("../javascript/JavascriptParser")} Parser */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 
 const PLUGIN_NAME = "URLPlugin";
 
@@ -43,9 +47,11 @@ class URLPlugin {
 				const getUrl = module => {
 					return pathToFileURL(module.resource);
 				};
+
 				/**
-				 * @param {JavascriptParser} parser parser
-				 * @param {object} parserOptions options
+				 * @param {Parser} parser parser parser
+				 * @param {JavascriptParserOptions} parserOptions parserOptions
+				 * @returns {void}
 				 */
 				const parserCallback = (parser, parserOptions) => {
 					if (parserOptions.url === false) return;
@@ -77,9 +83,7 @@ class URLPlugin {
 						)
 							return;
 
-						const request = parser.evaluateExpression(arg1).asString();
-
-						return request;
+						return parser.evaluateExpression(arg1).asString();
 					};
 
 					parser.hooks.canRename.for("URL").tap(PLUGIN_NAME, approve);
@@ -92,7 +96,7 @@ class URLPlugin {
 
 							return new BasicEvaluatedExpression()
 								.setString(url.toString())
-								.setRange(expr.range);
+								.setRange(/** @type {Range} */ (expr.range));
 						});
 					parser.hooks.new.for("URL").tap(PLUGIN_NAME, _expr => {
 						const expr = /** @type {NewExpressionNode} */ (_expr);
@@ -104,11 +108,14 @@ class URLPlugin {
 						const [arg1, arg2] = expr.arguments;
 						const dep = new URLDependency(
 							request,
-							[arg1.range[0], arg2.range[1]],
-							expr.range,
+							[
+								/** @type {Range} */ (arg1.range)[0],
+								/** @type {Range} */ (arg2.range)[1]
+							],
+							/** @type {Range} */ (expr.range),
 							relative
 						);
-						dep.loc = expr.loc;
+						dep.loc = /** @type {DependencyLocation} */ (expr.loc);
 						parser.state.current.addDependency(dep);
 						InnerGraph.onUsage(parser.state, e => (dep.usedByExports = e));
 						return true;

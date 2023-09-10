@@ -22,6 +22,7 @@ const ModuleDependency = require("./ModuleDependency");
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
 /** @typedef {import("../ModuleGraphConnection")} ModuleGraphConnection */
 /** @typedef {import("../ModuleGraphConnection").ConnectionState} ConnectionState */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 /** @typedef {import("../util/Hash")} Hash */
@@ -32,8 +33,8 @@ const getRawDataUrlModule = memoize(() => require("../asset/RawDataUrlModule"));
 class URLDependency extends ModuleDependency {
 	/**
 	 * @param {string} request request
-	 * @param {[number, number]} range range of the arguments of new URL( |> ... <| )
-	 * @param {[number, number]} outerRange range of the full |> new URL(...) <|
+	 * @param {Range} range range of the arguments of new URL( |> ... <| )
+	 * @param {Range} outerRange range of the full |> new URL(...) <|
 	 * @param {boolean=} relative use relative urls instead of absolute with base uri
 	 */
 	constructor(request, range, outerRange, relative) {
@@ -41,7 +42,7 @@ class URLDependency extends ModuleDependency {
 		this.range = range;
 		this.outerRange = outerRange;
 		this.relative = relative || false;
-		/** @type {Set<string> | boolean} */
+		/** @type {Set<string> | boolean | undefined} */
 		this.usedByExports = undefined;
 	}
 
@@ -67,7 +68,7 @@ class URLDependency extends ModuleDependency {
 
 	/**
 	 * @param {string} context context directory
-	 * @returns {Module} a module
+	 * @returns {Module | null} a module
 	 */
 	createIgnoredModule(context) {
 		const RawDataUrlModule = getRawDataUrlModule();

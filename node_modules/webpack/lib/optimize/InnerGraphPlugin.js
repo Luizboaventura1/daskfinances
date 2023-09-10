@@ -16,6 +16,7 @@ const InnerGraph = require("./InnerGraph");
 /** @typedef {import("estree").ClassExpression} ClassExpressionNode */
 /** @typedef {import("estree").Node} Node */
 /** @typedef {import("estree").VariableDeclarator} VariableDeclaratorNode */
+/** @typedef {import("../../declarations/WebpackOptions").JavascriptParserOptions} JavascriptParserOptions */
 /** @typedef {import("../Compiler")} Compiler */
 /** @typedef {import("../Dependency")} Dependency */
 /** @typedef {import("../dependencies/HarmonyImportSpecifierDependency")} HarmonyImportSpecifierDependency */
@@ -46,7 +47,7 @@ class InnerGraphPlugin {
 
 				/**
 				 * @param {JavascriptParser} parser the parser
-				 * @param {Object} parserOptions options
+				 * @param {JavascriptParserOptions} parserOptions options
 				 * @returns {void}
 				 */
 				const handler = (parser, parserOptions) => {
@@ -120,7 +121,10 @@ class InnerGraphPlugin {
 						if (!InnerGraph.isEnabled(parser.state)) return;
 
 						if (parser.scope.topLevelScope === true) {
-							if (statement.type === "ClassDeclaration") {
+							if (
+								statement.type === "ClassDeclaration" &&
+								parser.isPure(statement, statement.range[0])
+							) {
 								const name = statement.id ? statement.id.name : "*default*";
 								const fn = InnerGraph.tagTopLevelSymbol(parser, name);
 								classWithTopLevelSymbol.set(statement, fn);
@@ -131,8 +135,9 @@ class InnerGraphPlugin {
 								const fn = InnerGraph.tagTopLevelSymbol(parser, name);
 								const decl = statement.declaration;
 								if (
-									decl.type === "ClassExpression" ||
-									decl.type === "ClassDeclaration"
+									(decl.type === "ClassExpression" ||
+										decl.type === "ClassDeclaration") &&
+									parser.isPure(decl, decl.range[0])
 								) {
 									classWithTopLevelSymbol.set(decl, fn);
 								} else if (parser.isPure(decl, statement.range[0])) {
@@ -157,7 +162,10 @@ class InnerGraphPlugin {
 							decl.id.type === "Identifier"
 						) {
 							const name = decl.id.name;
-							if (decl.init.type === "ClassExpression") {
+							if (
+								decl.init.type === "ClassExpression" &&
+								parser.isPure(decl.init, decl.id.range[1])
+							) {
 								const fn = InnerGraph.tagTopLevelSymbol(parser, name);
 								classWithTopLevelSymbol.set(decl.init, fn);
 							} else if (parser.isPure(decl.init, decl.id.range[1])) {

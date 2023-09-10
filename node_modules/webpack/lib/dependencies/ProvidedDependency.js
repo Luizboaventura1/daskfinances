@@ -17,7 +17,9 @@ const ModuleDependency = require("./ModuleDependency");
 /** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
 /** @typedef {import("../DependencyTemplates")} DependencyTemplates */
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
+/** @typedef {import("../ModuleGraphConnection")} ModuleGraphConnection */
 /** @typedef {import("../RuntimeTemplate")} RuntimeTemplate */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 /** @typedef {import("../util/Hash")} Hash */
@@ -37,7 +39,7 @@ class ProvidedDependency extends ModuleDependency {
 	 * @param {string} request request
 	 * @param {string} identifier identifier
 	 * @param {string[]} ids ids
-	 * @param {[number, number]} range range
+	 * @param {Range} range range
 	 */
 	constructor(request, identifier, ids, range) {
 		super(request);
@@ -126,7 +128,9 @@ class ProvidedDependencyTemplate extends ModuleDependency.Template {
 		}
 	) {
 		const dep = /** @type {ProvidedDependency} */ (dependency);
-		const connection = moduleGraph.getConnection(dep);
+		const connection =
+			/** @type {ModuleGraphConnection} */
+			(moduleGraph.getConnection(dep));
 		const exportsInfo = moduleGraph.getExportsInfo(connection.module);
 		const usedName = exportsInfo.getUsedName(dep.ids, runtime);
 		initFragments.push(

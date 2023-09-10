@@ -13,13 +13,14 @@ const NullDependency = require("./NullDependency");
 /** @typedef {import("../Dependency").ExportsSpec} ExportsSpec */
 /** @typedef {import("../DependencyTemplate").CssDependencyTemplateContext} DependencyTemplateContext */
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
+/** @typedef {import("../css/CssParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 
 class CssLocalIdentifierDependency extends NullDependency {
 	/**
 	 * @param {string} name name
-	 * @param {[number, number]} range range
+	 * @param {Range} range range
 	 * @param {string=} prefix prefix
 	 */
 	constructor(name, range, prefix = "") {
@@ -74,6 +75,11 @@ class CssLocalIdentifierDependency extends NullDependency {
 	}
 }
 
+/**
+ * @param {string} str string
+ * @param {string | boolean} omitUnderscore true if you need to omit underscore
+ * @returns {string} escaped css identifier
+ */
 const escapeCssIdentifier = (str, omitUnderscore) => {
 	const escaped = `${str}`.replace(
 		// cspell:word uffff
@@ -103,6 +109,9 @@ CssLocalIdentifierDependency.Template = class CssLocalIdentifierDependencyTempla
 		const used = moduleGraph
 			.getExportInfo(module, dep.name)
 			.getUsedName(dep.name, runtime);
+
+		if (!used) return;
+
 		const moduleId = chunkGraph.getModuleId(module);
 		const identifier =
 			dep.prefix +

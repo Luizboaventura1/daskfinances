@@ -10,6 +10,7 @@ const path = require("path");
 const { RawSource } = require("webpack-sources");
 const ConcatenationScope = require("../ConcatenationScope");
 const Generator = require("../Generator");
+const { ASSET_MODULE_TYPE } = require("../ModuleTypeConstants");
 const RuntimeGlobals = require("../RuntimeGlobals");
 const createHash = require("../util/createHash");
 const { makePathsRelative } = require("../util/identifier");
@@ -106,6 +107,11 @@ const encodeDataUri = (encoding, source) => {
 	return encodedContent;
 };
 
+/**
+ * @param {string} encoding encoding
+ * @param {string} content content
+ * @returns {Buffer} decoded content
+ */
 const decodeDataUriContent = (encoding, content) => {
 	const isBase64 = encoding === "base64";
 
@@ -122,7 +128,7 @@ const decodeDataUriContent = (encoding, content) => {
 };
 
 const JS_TYPES = new Set(["javascript"]);
-const JS_AND_ASSET_TYPES = new Set(["javascript", "asset"]);
+const JS_AND_ASSET_TYPES = new Set(["javascript", ASSET_MODULE_TYPE]);
 const DEFAULT_ENCODING = "base64";
 
 class AssetGenerator extends Generator {
@@ -175,6 +181,7 @@ class AssetGenerator extends Generator {
 			);
 		}
 
+		/** @type {string | boolean | undefined} */
 		let mimeType = this.dataUrlOptions.mimetype;
 		if (mimeType === undefined) {
 			const ext = path.extname(module.nameForCondition());
@@ -207,7 +214,7 @@ class AssetGenerator extends Generator {
 			);
 		}
 
-		return mimeType;
+		return /** @type {string} */ (mimeType);
 	}
 
 	/**
@@ -228,11 +235,11 @@ class AssetGenerator extends Generator {
 		}
 	) {
 		switch (type) {
-			case "asset":
-				return module.originalSource();
+			case ASSET_MODULE_TYPE:
+				return /** @type {Source} */ (module.originalSource());
 			default: {
 				let content;
-				const originalSource = module.originalSource();
+				const originalSource = /** @type {Source} */ (module.originalSource());
 				if (module.buildInfo.dataUrl) {
 					let encodedSource;
 					if (typeof this.dataUrlOptions === "function") {
@@ -406,7 +413,7 @@ class AssetGenerator extends Generator {
 	 */
 	getSize(module, type) {
 		switch (type) {
-			case "asset": {
+			case ASSET_MODULE_TYPE: {
 				const originalSource = module.originalSource();
 
 				if (!originalSource) {

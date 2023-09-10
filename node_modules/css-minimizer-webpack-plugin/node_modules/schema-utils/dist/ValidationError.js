@@ -4,11 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-const {
-  stringHints,
-  numberHints
-} = require("./util/hints");
-
+var _memorize = _interopRequireDefault(require("./util/memorize"));
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 /** @typedef {import("json-schema").JSONSchema6} JSONSchema6 */
 /** @typedef {import("json-schema").JSONSchema7} JSONSchema7 */
 
@@ -16,7 +13,6 @@ const {
 /** @typedef {import("./validate").ValidationErrorConfiguration} ValidationErrorConfiguration */
 /** @typedef {import("./validate").PostFormatter} PostFormatter */
 /** @typedef {import("./validate").SchemaUtilErrorObject} SchemaUtilErrorObject */
-
 /** @enum {number} */
 const SPECIFICITY = {
   type: 1,
@@ -314,6 +310,9 @@ function getSchemaNonTypes(schema) {
 function formatHints(hints) {
   return hints.length > 0 ? `(${hints.join(", ")})` : "";
 }
+const getUtilHints = (0, _memorize.default)(() =>
+// eslint-disable-next-line global-require
+require("./util/hints"));
 
 /**
  * @param {Schema} schema
@@ -322,9 +321,11 @@ function formatHints(hints) {
  */
 function getHints(schema, logic) {
   if (likeNumber(schema) || likeInteger(schema)) {
-    return numberHints(schema, logic);
+    const util = getUtilHints();
+    return util.numberHints(schema, logic);
   } else if (likeString(schema)) {
-    return stringHints(schema, logic);
+    const util = getUtilHints();
+    return util.stringHints(schema, logic);
   }
   return [];
 }
@@ -435,8 +436,13 @@ class ValidationError extends Error {
       item => item === "Function" ? "function" : item).join(" | ");
     }
     if (schema.enum) {
-      return (/** @type {Array<any>} */schema.enum.map(item => JSON.stringify(item)).join(" | ")
-      );
+      const enumValues = /** @type {Array<any>} */schema.enum.map(item => {
+        if (item === null && schema.undefinedAsNull) {
+          return `${JSON.stringify(item)} | undefined`;
+        }
+        return JSON.stringify(item);
+      }).join(" | ");
+      return `${enumValues}`;
     }
     if (typeof schema.const !== "undefined") {
       return JSON.stringify(schema.const);

@@ -12,6 +12,7 @@ const NullDependency = require("./NullDependency");
 /** @typedef {import("webpack-sources").ReplaceSource} ReplaceSource */
 /** @typedef {import("../Dependency")} Dependency */
 /** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 
@@ -19,7 +20,7 @@ const NullDependency = require("./NullDependency");
 const DEFINITIONS = {
 	f: {
 		definition: "var __WEBPACK_AMD_DEFINE_RESULT__;",
-		content: `!(__WEBPACK_AMD_DEFINE_RESULT__ = (#).call(exports, __webpack_require__, exports, module),
+		content: `!(__WEBPACK_AMD_DEFINE_RESULT__ = (#).call(exports, ${RuntimeGlobals.require}, exports, module),
 		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))`,
 		requests: [
 			RuntimeGlobals.require,
@@ -37,7 +38,7 @@ const DEFINITIONS = {
 			"var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;",
 		content: `!(__WEBPACK_AMD_DEFINE_FACTORY__ = (#),
 		__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
-		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+		(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, ${RuntimeGlobals.require}, exports, module)) :
 		__WEBPACK_AMD_DEFINE_FACTORY__),
 		__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__))`,
 		requests: [
@@ -69,8 +70,7 @@ const DEFINITIONS = {
 	},
 	lf: {
 		definition: "var XXX, XXXmodule;",
-		content:
-			"!(XXXmodule = { id: YYY, exports: {}, loaded: false }, XXX = (#).call(XXXmodule.exports, __webpack_require__, XXXmodule.exports, XXXmodule), XXXmodule.loaded = true, XXX === undefined && (XXX = XXXmodule.exports))",
+		content: `!(XXXmodule = { id: YYY, exports: {}, loaded: false }, XXX = (#).call(XXXmodule.exports, ${RuntimeGlobals.require}, XXXmodule.exports, XXXmodule), XXXmodule.loaded = true, XXX === undefined && (XXX = XXXmodule.exports))`,
 		requests: [RuntimeGlobals.require, RuntimeGlobals.module]
 	},
 	lo: {
@@ -80,8 +80,7 @@ const DEFINITIONS = {
 	},
 	lof: {
 		definition: "var XXX, XXXfactory, XXXmodule;",
-		content:
-			"!(XXXfactory = (#), (typeof XXXfactory === 'function' ? ((XXXmodule = { id: YYY, exports: {}, loaded: false }), (XXX = XXXfactory.call(XXXmodule.exports, __webpack_require__, XXXmodule.exports, XXXmodule)), (XXXmodule.loaded = true), XXX === undefined && (XXX = XXXmodule.exports)) : XXX = XXXfactory))",
+		content: `!(XXXfactory = (#), (typeof XXXfactory === 'function' ? ((XXXmodule = { id: YYY, exports: {}, loaded: false }), (XXX = XXXfactory.call(XXXmodule.exports, ${RuntimeGlobals.require}, XXXmodule.exports, XXXmodule)), (XXXmodule.loaded = true), XXX === undefined && (XXX = XXXmodule.exports)) : XXX = XXXfactory))`,
 		requests: [RuntimeGlobals.require, RuntimeGlobals.module]
 	},
 	laf: {
@@ -107,6 +106,13 @@ const DEFINITIONS = {
 };
 
 class AMDDefineDependency extends NullDependency {
+	/**
+	 * @param {Range} range range
+	 * @param {Range} arrayRange array range
+	 * @param {Range} functionRange function range
+	 * @param {Range} objectRange object range
+	 * @param {boolean} namedModule true, when define is called with a name
+	 */
 	constructor(range, arrayRange, functionRange, objectRange, namedModule) {
 		super();
 		this.range = range;
@@ -174,6 +180,10 @@ AMDDefineDependency.Template = class AMDDefineDependencyTemplate extends (
 		this.replace(dep, source, definition, content);
 	}
 
+	/**
+	 * @param {AMDDefineDependency} dependency dependency
+	 * @returns {string} variable name
+	 */
 	localModuleVar(dependency) {
 		return (
 			dependency.localModule &&
@@ -182,6 +192,10 @@ AMDDefineDependency.Template = class AMDDefineDependencyTemplate extends (
 		);
 	}
 
+	/**
+	 * @param {AMDDefineDependency} dependency dependency
+	 * @returns {string} branch
+	 */
 	branch(dependency) {
 		const localModuleVar = this.localModuleVar(dependency) ? "l" : "";
 		const arrayRange = dependency.arrayRange ? "a" : "";
@@ -190,6 +204,12 @@ AMDDefineDependency.Template = class AMDDefineDependencyTemplate extends (
 		return localModuleVar + arrayRange + objectRange + functionRange;
 	}
 
+	/**
+	 * @param {AMDDefineDependency} dependency dependency
+	 * @param {ReplaceSource} source source
+	 * @param {string} definition definition
+	 * @param {string} text text
+	 */
 	replace(dependency, source, definition, text) {
 		const localModuleVar = this.localModuleVar(dependency);
 		if (localModuleVar) {
@@ -210,18 +230,34 @@ AMDDefineDependency.Template = class AMDDefineDependencyTemplate extends (
 
 		let current = dependency.range[0];
 		if (dependency.arrayRange) {
-			source.replace(current, dependency.arrayRange[0] - 1, texts.shift());
+			source.replace(
+				current,
+				dependency.arrayRange[0] - 1,
+				/** @type {string} */ (texts.shift())
+			);
 			current = dependency.arrayRange[1];
 		}
 
 		if (dependency.objectRange) {
-			source.replace(current, dependency.objectRange[0] - 1, texts.shift());
+			source.replace(
+				current,
+				dependency.objectRange[0] - 1,
+				/** @type {string} */ (texts.shift())
+			);
 			current = dependency.objectRange[1];
 		} else if (dependency.functionRange) {
-			source.replace(current, dependency.functionRange[0] - 1, texts.shift());
+			source.replace(
+				current,
+				dependency.functionRange[0] - 1,
+				/** @type {string} */ (texts.shift())
+			);
 			current = dependency.functionRange[1];
 		}
-		source.replace(current, dependency.range[1] - 1, texts.shift());
+		source.replace(
+			current,
+			dependency.range[1] - 1,
+			/** @type {string} */ (texts.shift())
+		);
 		if (texts.length > 0) throw new Error("Implementation error");
 	}
 };

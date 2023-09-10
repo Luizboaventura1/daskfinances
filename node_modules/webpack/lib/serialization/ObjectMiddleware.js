@@ -61,6 +61,11 @@ Technically any value can be used.
  * @property {function(ObjectDeserializerContext): any} deserialize
  */
 
+/**
+ * @template T
+ * @param {Set<T>} set set
+ * @param {number} size count of items to keep
+ */
 const setSetSize = (set, size) => {
 	let i = 0;
 	for (const item of set) {
@@ -70,6 +75,11 @@ const setSetSize = (set, size) => {
 	}
 };
 
+/**
+ * @template K, X
+ * @param {Map<K, X>} map map
+ * @param {number} size count of items to keep
+ */
 const setMapSize = (map, size) => {
 	let i = 0;
 	for (const item of map.keys()) {
@@ -97,9 +107,12 @@ const ESCAPE_UNDEFINED = false;
 
 const CURRENT_VERSION = 2;
 
+/** @type {Map<Constructor, { request?: string, name?: string | number | null, serializer?: ObjectSerializer }>} */
 const serializers = new Map();
+/** @type {Map<string | number, ObjectSerializer>} */
 const serializerInversed = new Map();
 
+/** @type {Set<string>} */
 const loadedRequests = new Set();
 
 const NOT_SERIALIZABLE = {};
@@ -145,7 +158,10 @@ if (exports.constructor !== Object) {
 }
 
 for (const { request, name, serializer } of serializers.values()) {
-	serializerInversed.set(`${request}/${name}`, serializer);
+	serializerInversed.set(
+		`${request}/${name}`,
+		/** @type {ObjectSerializer} */ (serializer)
+	);
 }
 
 /** @type {Map<RegExp, (request: string) => boolean>} */
@@ -178,7 +194,7 @@ class ObjectMiddleware extends SerializerMiddleware {
 	/**
 	 * @param {Constructor} Constructor the constructor
 	 * @param {string} request the request which will be required when deserializing
-	 * @param {string} name the name to make multiple serializer unique when sharing a request
+	 * @param {string | null} name the name to make multiple serializer unique when sharing a request
 	 * @param {ObjectSerializer} serializer the serializer
 	 * @returns {void}
 	 */
@@ -242,6 +258,11 @@ class ObjectMiddleware extends SerializerMiddleware {
 		return config;
 	}
 
+	/**
+	 * @param {string} request request
+	 * @param {TODO} name name
+	 * @returns {ObjectSerializer} serializer
+	 */
 	static getDeserializerFor(request, name) {
 		const key = request + "/" + name;
 		const serializer = serializerInversed.get(key);
@@ -253,6 +274,11 @@ class ObjectMiddleware extends SerializerMiddleware {
 		return serializer;
 	}
 
+	/**
+	 * @param {string} request request
+	 * @param {TODO} name name
+	 * @returns {ObjectSerializer} serializer
+	 */
 	static _getDeserializerForWithoutError(request, name) {
 		const key = request + "/" + name;
 		const serializer = serializerInversed.get(key);
@@ -373,6 +399,9 @@ class ObjectMiddleware extends SerializerMiddleware {
 						return `Object [null prototype] { ${Object.keys(item).join(
 							", "
 						)} }`;
+					}
+					if (typeof item === "bigint") {
+						return `BigInt ${item}n`;
 					}
 					try {
 						return `${item}`;

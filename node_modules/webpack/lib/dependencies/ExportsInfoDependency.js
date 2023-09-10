@@ -16,6 +16,7 @@ const NullDependency = require("./NullDependency");
 /** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
 /** @typedef {import("../Module")} Module */
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 /** @typedef {import("../util/Hash")} Hash */
@@ -50,19 +51,23 @@ const getProperty = (moduleGraph, module, exportName, property, runtime) => {
 	switch (property) {
 		case "canMangle": {
 			const exportsInfo = moduleGraph.getExportsInfo(module);
-			const exportInfo = exportsInfo.getExportInfo(exportName);
+			const exportInfo = exportsInfo.getExportInfo(
+				/** @type {string} */ (exportName)
+			);
 			if (exportInfo) return exportInfo.canMangle;
 			return exportsInfo.otherExportsInfo.canMangle;
 		}
 		case "used":
 			return (
-				moduleGraph.getExportsInfo(module).getUsed(exportName, runtime) !==
+				moduleGraph
+					.getExportsInfo(module)
+					.getUsed(/** @type {string} */ (exportName), runtime) !==
 				UsageState.Unused
 			);
 		case "useInfo": {
 			const state = moduleGraph
 				.getExportsInfo(module)
-				.getUsed(exportName, runtime);
+				.getUsed(/** @type {string} */ (exportName), runtime);
 			switch (state) {
 				case UsageState.Used:
 				case UsageState.OnlyPropertiesUsed:
@@ -78,12 +83,19 @@ const getProperty = (moduleGraph, module, exportName, property, runtime) => {
 			}
 		}
 		case "provideInfo":
-			return moduleGraph.getExportsInfo(module).isExportProvided(exportName);
+			return moduleGraph
+				.getExportsInfo(module)
+				.isExportProvided(/** @type {string} */ (exportName));
 	}
 	return undefined;
 };
 
 class ExportsInfoDependency extends NullDependency {
+	/**
+	 * @param {Range} range range
+	 * @param {TODO} exportName export name
+	 * @param {string | null} property property
+	 */
 	constructor(range, exportName, property) {
 		super();
 		this.range = range;
@@ -102,6 +114,10 @@ class ExportsInfoDependency extends NullDependency {
 		super.serialize(context);
 	}
 
+	/**
+	 * @param {ObjectDeserializerContext} context context
+	 * @returns {ExportsInfoDependency} ExportsInfoDependency
+	 */
 	static deserialize(context) {
 		const obj = new ExportsInfoDependency(
 			context.read(),

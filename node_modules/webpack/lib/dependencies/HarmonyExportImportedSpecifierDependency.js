@@ -15,6 +15,7 @@ const { countIterable } = require("../util/IterableHelpers");
 const { first, combine } = require("../util/SetHelpers");
 const makeSerializable = require("../util/makeSerializable");
 const propertyAccess = require("../util/propertyAccess");
+const { propertyName } = require("../util/propertyName");
 const { getRuntimeKey, keyToRuntime } = require("../util/runtime");
 const HarmonyExportInitFragment = require("./HarmonyExportInitFragment");
 const HarmonyImportDependency = require("./HarmonyImportDependency");
@@ -35,6 +36,7 @@ const processExportInfo = require("./processExportInfo");
 /** @typedef {import("../ModuleGraphConnection").ConnectionState} ConnectionState */
 /** @typedef {import("../RuntimeTemplate")} RuntimeTemplate */
 /** @typedef {import("../WebpackError")} WebpackError */
+/** @typedef {import("../javascript/JavascriptParser").Assertions} Assertions */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 /** @typedef {import("../util/Hash")} Hash */
@@ -328,10 +330,10 @@ class HarmonyExportImportedSpecifierDependency extends HarmonyImportDependency {
 	 * @param {string[]} ids the requested export name of the imported module
 	 * @param {string | null} name the export name of for this module
 	 * @param {Set<string>} activeExports other named exports in the module
-	 * @param {ReadonlyArray<HarmonyExportImportedSpecifierDependency> | Iterable<HarmonyExportImportedSpecifierDependency>} otherStarExports other star exports in the module before this import
+	 * @param {ReadonlyArray<HarmonyExportImportedSpecifierDependency> | Iterable<HarmonyExportImportedSpecifierDependency> | null} otherStarExports other star exports in the module before this import
 	 * @param {number} exportPresenceMode mode of checking export names
-	 * @param {HarmonyStarExportsList} allStarExports all star exports in the module
-	 * @param {Record<string, any>=} assertions import assertions
+	 * @param {HarmonyStarExportsList | null} allStarExports all star exports in the module
+	 * @param {Assertions=} assertions import assertions
 	 */
 	constructor(
 		request,
@@ -754,7 +756,7 @@ class HarmonyExportImportedSpecifierDependency extends HarmonyImportDependency {
 	/**
 	 * Returns warnings
 	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {WebpackError[]} warnings
+	 * @returns {WebpackError[] | null | undefined} warnings
 	 */
 	getWarnings(moduleGraph) {
 		const exportsPresence = this._getEffectiveExportPresenceLevel(moduleGraph);
@@ -767,7 +769,7 @@ class HarmonyExportImportedSpecifierDependency extends HarmonyImportDependency {
 	/**
 	 * Returns errors
 	 * @param {ModuleGraph} moduleGraph module graph
-	 * @returns {WebpackError[]} errors
+	 * @returns {WebpackError[] | null | undefined} errors
 	 */
 	getErrors(moduleGraph) {
 		const exportsPresence = this._getEffectiveExportPresenceLevel(moduleGraph);
@@ -1219,7 +1221,7 @@ HarmonyExportImportedSpecifierDependency.Template = class HarmonyExportImportedS
 			valueKey[0]
 		)})) ${
 			RuntimeGlobals.definePropertyGetters
-		}(${exportsName}, { ${JSON.stringify(
+		}(${exportsName}, { ${propertyName(
 			key
 		)}: function() { return ${returnValue}; } });\n`;
 	}

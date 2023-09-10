@@ -9,10 +9,18 @@ const makeSerializable = require("../util/makeSerializable");
 const ContextDependency = require("./ContextDependency");
 const ContextDependencyTemplateAsRequireCall = require("./ContextDependencyTemplateAsRequireCall");
 
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 
 class CommonJsRequireContextDependency extends ContextDependency {
+	/**
+	 * @param {TODO} options options for the context module
+	 * @param {Range} range location in source code
+	 * @param {Range | undefined} valueRange location of the require call
+	 * @param {boolean | string } inShorthand true or name
+	 * @param {string} context context
+	 */
 	constructor(options, range, valueRange, inShorthand, context) {
 		super(options, context);
 

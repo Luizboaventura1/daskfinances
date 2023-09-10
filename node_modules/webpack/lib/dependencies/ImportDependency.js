@@ -13,7 +13,10 @@ const ModuleDependency = require("./ModuleDependency");
 /** @typedef {import("../AsyncDependenciesBlock")} AsyncDependenciesBlock */
 /** @typedef {import("../Dependency").ReferencedExport} ReferencedExport */
 /** @typedef {import("../DependencyTemplate").DependencyTemplateContext} DependencyTemplateContext */
+/** @typedef {import("../Module")} Module */
+/** @typedef {import("../Module").BuildMeta} BuildMeta */
 /** @typedef {import("../ModuleGraph")} ModuleGraph */
+/** @typedef {import("../javascript/JavascriptParser").Range} Range */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectDeserializerContext} ObjectDeserializerContext */
 /** @typedef {import("../serialization/ObjectMiddleware").ObjectSerializerContext} ObjectSerializerContext */
 /** @typedef {import("../util/runtime").RuntimeSpec} RuntimeSpec */
@@ -21,8 +24,8 @@ const ModuleDependency = require("./ModuleDependency");
 class ImportDependency extends ModuleDependency {
 	/**
 	 * @param {string} request the request
-	 * @param {[number, number]} range expression range
-	 * @param {string[][]=} referencedExports list of referenced exports
+	 * @param {Range} range expression range
+	 * @param {(string[][] | null)=} referencedExports list of referenced exports
 	 */
 	constructor(request, range, referencedExports) {
 		super(request);
@@ -95,9 +98,9 @@ ImportDependency.Template = class ImportDependencyTemplate extends (
 		const content = runtimeTemplate.moduleNamespacePromise({
 			chunkGraph,
 			block: block,
-			module: moduleGraph.getModule(dep),
+			module: /** @type {Module} */ (moduleGraph.getModule(dep)),
 			request: dep.request,
-			strict: module.buildMeta.strictHarmonyModule,
+			strict: /** @type {BuildMeta} */ (module.buildMeta).strictHarmonyModule,
 			message: "import()",
 			runtimeRequirements
 		});

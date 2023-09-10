@@ -63,7 +63,8 @@ const makeSerializable = require("./util/makeSerializable");
  * @property {RawChunkGroupOptions=} groupOptions
  * @property {string=} typePrefix
  * @property {string=} category
- * @property {string[][]=} referencedExports exports referenced from modules (won't be mangled)
+ * @property {(string[][] | null)=} referencedExports exports referenced from modules (won't be mangled)
+ * @property {string=} layer
  */
 
 /**
@@ -107,8 +108,9 @@ class ContextModule extends Module {
 			const resourceQuery = (options && options.resourceQuery) || parsed.query;
 			const resourceFragment =
 				(options && options.resourceFragment) || parsed.fragment;
+			const layer = options && options.layer;
 
-			super(JAVASCRIPT_MODULE_TYPE_DYNAMIC, resource);
+			super(JAVASCRIPT_MODULE_TYPE_DYNAMIC, resource, layer);
 			/** @type {ContextModuleOptions} */
 			this.options = {
 				...options,
@@ -117,7 +119,7 @@ class ContextModule extends Module {
 				resourceFragment
 			};
 		} else {
-			super(JAVASCRIPT_MODULE_TYPE_DYNAMIC);
+			super(JAVASCRIPT_MODULE_TYPE_DYNAMIC, undefined, options.layer);
 			/** @type {ContextModuleOptions} */
 			this.options = {
 				...options,
@@ -228,6 +230,9 @@ class ContextModule extends Module {
 			identifier += "|strict namespace object";
 		} else if (this.options.namespaceObject) {
 			identifier += "|namespace object";
+		}
+		if (this.layer) {
+			identifier += `|layer: ${this.layer}`;
 		}
 
 		return identifier;
@@ -640,7 +645,7 @@ class ContextModule extends Module {
 
 	getReturn(type, asyncModule) {
 		if (type === 9) {
-			return "__webpack_require__(id)";
+			return `${RuntimeGlobals.require}(id)`;
 		}
 		return `${RuntimeGlobals.createFakeNamespaceObject}(id, ${type}${
 			asyncModule ? " | 16" : ""
@@ -799,7 +804,7 @@ module.exports = webpackAsyncContext;`;
 				? `${arrow ? "id =>" : "function(id)"} {
 		${this.getReturnModuleObjectSource(fakeMap)}
 	}`
-				: "__webpack_require__";
+				: RuntimeGlobals.require;
 		return `var map = ${JSON.stringify(map, null, "\t")};
 ${this.getFakeMapInitStatement(fakeMap)}
 
@@ -850,7 +855,7 @@ module.exports = webpackAsyncContext;`;
 				? `${arrow ? "id =>" : "function(id)"} {
 		${this.getReturnModuleObjectSource(fakeMap, true)};
 	}`
-				: "__webpack_require__";
+				: RuntimeGlobals.require;
 
 		return `var map = ${JSON.stringify(map, null, "\t")};
 ${this.getFakeMapInitStatement(fakeMap)}
