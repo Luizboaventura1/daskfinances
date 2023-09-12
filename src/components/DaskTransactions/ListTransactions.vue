@@ -52,6 +52,9 @@
       </div>
         </div>
     </div>
+
+  <!-- Edit Transaction -->
+
   <div
     v-if="stateTransactionModal"
     class="modal-transaction-edit pa-3 d-flex justify-center align-center"
@@ -131,6 +134,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Popups -->
+
   <SuccessPopupPanel
     :statePopupPanel="statePopupPanel"
   >
@@ -161,8 +167,7 @@ let token = store.state.token
 
 let transacoes = ref([])
 let balance = ref({})
-let transactionTemp = ref([])
-
+let transactionsTemp = ref([])
 
 onMounted(async () => {
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
@@ -178,7 +183,7 @@ onMounted(async () => {
           idUser: docTransaction.data().idUser
         })
 
-        transactionTemp.value.push({
+        transactionsTemp.value.push({
           id: docTransaction.id,
           nome: docTransaction.data().nome,
           valor: docTransaction.data().valor,
@@ -188,7 +193,7 @@ onMounted(async () => {
         })
       }
     })
-
+    
     transacoes.value = newTransactions.value
   });
 })
@@ -213,6 +218,15 @@ onMounted(async () => {
 
 let currentyIdTransaction = ref('')
 
+// Edit transaction
+
+let currentyTransaction = ref({})
+let stateTransactionModal = ref(false)
+
+let editName = ref("")
+let editTransactionValue = ref("")
+let editDate = ref("")
+
 const transactionEdit = ((index) => {
   currentyIdTransaction.value = transacoes.value[index].id
   currentyTransaction.value = {...transacoes.value[index]}
@@ -225,13 +239,6 @@ const transactionEdit = ((index) => {
   // Open modal
   stateTransactionModal.value = true
 })
-
-let currentyTransaction = ref({})
-let stateTransactionModal = ref(false)
-
-let editName = ref("")
-let editTransactionValue = ref("")
-let editDate = ref("")
 
 const saveChanges = () => {
   const transactionDocRef = doc(db, 'transacoes', currentyIdTransaction.value);
@@ -274,6 +281,8 @@ const cancelButton = () => {
   stateConfirmModal.value = false
 }
 
+// Delete Transaction
+
 const confirmDeleteTransaction = async () => {
   let docRef = doc(db,'transacoes',transacoes.value.at(indexDeleteTransaction.value).id)
   await deleteDoc(docRef)
@@ -282,15 +291,15 @@ const confirmDeleteTransaction = async () => {
 
   const balanceDocRef = doc(db, 'saldo', balance.value.id);
 
-  if (transactionTemp.value.at(indexDeleteTransaction.value).tipo === 'receita') {
+  if (transactionsTemp.value.at(indexDeleteTransaction.value).tipo === 'receita') {
     updateDoc(balanceDocRef, {
-      saldo: balance.value.balance = Number(balance.value.balance) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
-      receita: balance.value.revenue = Number(balance.value.revenue) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
+      saldo: balance.value.balance = parseInt(balance.value.balance) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
+      receita: balance.value.revenue = parseInt(balance.value.revenue) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
     })
-  } else if (transactionTemp.value.at(indexDeleteTransaction.value).tipo === 'gasto') {
+  } else if (transactionsTemp.value.at(indexDeleteTransaction.value).tipo === 'gasto') {
     updateDoc(balanceDocRef, {
-      saldo: balance.value.balance = parseInt(balance.value.balance) + Number(transactionTemp.value.at(indexDeleteTransaction.value).valor),
-      gasto: balance.value.spent = parseInt(balance.value.spent) - Number(transactionTemp.value.at(indexDeleteTransaction.value).valor)
+      saldo: balance.value.balance = parseInt(balance.value.balance) + parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
+      gasto: balance.value.spent = parseInt(balance.value.spent) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor)
     })
   }
 
