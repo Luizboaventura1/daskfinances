@@ -83,7 +83,6 @@
           <div class="edit-description">
             <input
               class="input-edit pa-3"
-              type="text"
               placeholder="Descrição"
               v-model="editName"
             >
@@ -98,7 +97,6 @@
             <input
               class="input-edit pa-3"
               placeholder="Valor da transacao"
-              type="text"
               v-model="editTransactionValue"
             >
           </div>
@@ -193,7 +191,7 @@ onMounted(async () => {
         })
       }
     })
-    
+
     transacoes.value = newTransactions.value
   });
 })

@@ -16,6 +16,7 @@
           v-model="nomeTransacao"
           class="input-transaction text-white w-100 border-0 px-2 py-3 rounded mb-4"
           placeholder="Descrição"
+          type="text"
           maxlength="30"
         >
         <input
@@ -144,6 +145,7 @@ if(noSpaces()) {
   successPopup('Transação conluída!')
   
   clearInputs()
+  clearButtonOption()
   stateModal.value = false
   }else {
     alertPopupPanel('Preencha os campos!')
@@ -237,6 +239,12 @@ const prohibitedButton = () => {
 const exitButton = () => {
   tipoTransacao.value = 'gasto'
   colorButtonExit.value = 'bg-red-accent-3'
+  colorButtonProhibited.value = ''
+}
+
+const clearButtonOption = () => {
+  tipoTransacao.value = ''
+  colorButtonExit.value = 'bg-transparent'
   colorButtonProhibited.value = ''
 }
 
