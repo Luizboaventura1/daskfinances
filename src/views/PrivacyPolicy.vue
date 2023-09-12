@@ -2,12 +2,7 @@
   <v-app>
     <header class="background">
       <v-container>
-        <v-btn
-          class="rounded-lg back-button font-weight-bold"
-          to="/"
-        >
-          Voltar
-        </v-btn>
+        <BackButton />
         <main class="rounded-lg pa-3 mt-9">
           <div class="text-white">
             <v-container>
@@ -55,11 +50,6 @@
 .background {
   background-color: black !important;
   height: 100%;
-}
-
-.back-button {
-  color: rgb(255, 255, 255);
-  background-color: #50565b;
 }
 
 main {
