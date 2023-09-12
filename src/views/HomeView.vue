@@ -1,8 +1,5 @@
 <template>
   <v-app theme="dark">
-    <div class="bg-red-accent-4 w-100 py-2 text-center">
-      <span class="text-white">Sistema em manutenção! Disponível em breve...</span>
-    </div>
     <header>
       <v-container>
         <nav class="d-flex">
