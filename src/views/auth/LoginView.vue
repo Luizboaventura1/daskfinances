@@ -167,6 +167,7 @@ const alertPopupPanel = (msg) => {
 
 let validationGmail = ref(false)
 let validationPassword = ref(false)
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
 const emailRules = [
   value => {
@@ -177,7 +178,7 @@ const emailRules = [
       return 'Email obrigatório!'
   },
   value => {
-    if(value.includes('@') && !value.includes(' ') && value.split('@').length == 2 && value.split('@').at(1).trim() != '' && value.split('@').at(0).trim() != '')
+    if(emailRegex.test(value))
       return validationGmail.value = true
     else
       validationGmail.value = false

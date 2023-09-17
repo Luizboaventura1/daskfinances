@@ -214,10 +214,9 @@ onMounted(async () => {
   });
 })
 
-let currentyIdTransaction = ref('')
-
 // Edit transaction
 
+let currentyIdTransaction = ref('')
 let currentyTransaction = ref({})
 let stateTransactionModal = ref(false)
 
