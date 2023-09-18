@@ -108,7 +108,7 @@ const store = useStore()
 
 let nomeTransacao = ref('')
 let valorTransacao = ref('')
-let dataTransacao = ref('')
+let dataTransacao = ref("")
 let tipoTransacao = ref('')
 
 const addTransacao = () => {

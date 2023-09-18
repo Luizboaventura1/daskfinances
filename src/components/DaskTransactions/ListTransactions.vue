@@ -165,23 +165,13 @@ let token = store.state.token
 
 let transacoes = ref([])
 let balance = ref({})
-let transactionsTemp = ref([])
 
 onMounted(async () => {
   onSnapshot(collection(db, "transacoes"), (snapshot) => {
-    let newTransactions = ref([])
+    let newTransactions = []
     snapshot.forEach((docTransaction) => {
       if(token.id === docTransaction.data().idUser) {
-        newTransactions.value.push({
-          id: docTransaction.id,
-          nome: docTransaction.data().nome,
-          valor: docTransaction.data().valor,
-          tipo: docTransaction.data().tipo,
-          data: docTransaction.data().data,
-          idUser: docTransaction.data().idUser
-        })
-
-        transactionsTemp.value.push({
+        newTransactions.push({
           id: docTransaction.id,
           nome: docTransaction.data().nome,
           valor: docTransaction.data().valor,
@@ -192,7 +182,7 @@ onMounted(async () => {
       }
     })
 
-    transacoes.value = newTransactions.value
+    transacoes.value = newTransactions
   });
 })
 
@@ -228,10 +218,11 @@ const transactionEdit = ((index) => {
   currentyIdTransaction.value = transacoes.value[index].id
   currentyTransaction.value = {...transacoes.value[index]}
 
+
   // Show data in modal
   editName.value = currentyTransaction.value.nome
   editTransactionValue.value = currentyTransaction.value.valor
-  editDate.value = currentyTransaction.value.data
+  editDate.value = currentyTransaction.value.valor
 
   // Open modal
   stateTransactionModal.value = true
@@ -249,6 +240,8 @@ const saveChanges = () => {
   alertPopupPanel('Alterado com sucesso!')
   stateTransactionModal.value = false
 }
+
+// Alert Popup
 
 let statePopupPanel = ref(false)
 let textPopupPanel = ref('')
@@ -280,24 +273,27 @@ const cancelButton = () => {
 
 // Delete Transaction
 
-const confirmDeleteTransaction = async () => {
+const confirmDeleteTransaction = () => {
   let docRef = doc(db,'transacoes',transacoes.value.at(indexDeleteTransaction.value).id)
-  await deleteDoc(docRef)
   
   // Update balance
 
   const balanceDocRef = doc(db, 'saldo', balance.value.id);
 
-  if (transactionsTemp.value.at(indexDeleteTransaction.value).tipo === 'receita') {
+  if (transacoes.value.at(indexDeleteTransaction.value).tipo === 'receita') {
     updateDoc(balanceDocRef, {
-      saldo: balance.value.balance = parseInt(balance.value.balance) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
-      receita: balance.value.revenue = parseInt(balance.value.revenue) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
+      saldo: balance.value.balance = parseInt(balance.value.balance) - parseInt(transacoes.value.at(indexDeleteTransaction.value).valor),
+      receita: balance.value.revenue = parseInt(balance.value.revenue) - parseInt(transacoes.value.at(indexDeleteTransaction.value).valor),
     })
-  } else if (transactionsTemp.value.at(indexDeleteTransaction.value).tipo === 'gasto') {
+
+    deleteDoc(docRef)
+  } else if (transacoes.value.at(indexDeleteTransaction.value).tipo === 'gasto') {
     updateDoc(balanceDocRef, {
-      saldo: balance.value.balance = parseInt(balance.value.balance) + parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor),
-      gasto: balance.value.spent = parseInt(balance.value.spent) - parseInt(transactionsTemp.value.at(indexDeleteTransaction.value).valor)
+      saldo: balance.value.balance = parseInt(balance.value.balance) + parseInt(transacoes.value.at(indexDeleteTransaction.value).valor),
+      gasto: balance.value.spent = parseInt(balance.value.spent) - parseInt(transacoes.value.at(indexDeleteTransaction.value).valor)
     })
+
+    deleteDoc(docRef)
   }
 
   stateConfirmModal.value = false
