@@ -223,7 +223,7 @@
         <div class="card-ceo rounded-lg">
           <h1>Luiz</h1>
           <h3 class="text-subtitle-1 font-italic mb-4">Ceo/Front-end Developer</h3>
-          <p>Criador da DaskFinances, uma plataforma de controle financeiro que ajuda pessoas a registrar seus gastos, receitas e aprender a cuidar melhor de seu dinheiro.</p>
+          <p>Criador da DaskFinances, uma plataforma de controle financeiro que ajuda pessoas a registrar seus gastos, receitas e aprender a cuidar melhor do seu dinheiro.</p>
         </div>
       </v-container>
     </section>
