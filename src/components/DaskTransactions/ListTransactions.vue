@@ -186,6 +186,8 @@ onMounted(async () => {
   });
 })
 
+// Get Balance
+
 onMounted(async () => {
     onSnapshot(collection(db, "saldo"), (snapshot) => {
     let tempBalance = {}

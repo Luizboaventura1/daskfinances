@@ -45,7 +45,7 @@
 </template>
 
 <script setup>
-
+import BackButton from "@/components/Buttons/BackButton.vue";
 </script>
 
 <style lang="scss" scoped>

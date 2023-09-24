@@ -2,6 +2,9 @@
   <v-app theme="dark">
     <header>
       <v-container>
+
+        <!-- Navbar -->
+
         <nav class="d-flex">
           <div class="container-logo w-25 d-flex justify-start align-center">
             <router-link to="/">
@@ -55,6 +58,9 @@
         </main>
       </v-container>
     </header>
+
+    <!-- Container Benefits -->
+
     <section class="container-benefits py-7">
       <v-container>
         <v-row>
@@ -109,6 +115,9 @@
         </v-row>
       </v-container>
     </section>
+
+    <!-- Container Results -->
+
     <section class="container-results py-9">
       <v-container>
         <v-row>
@@ -133,75 +142,89 @@
         </v-row>
       </v-container>
     </section>
-    <section class="container-cta-app py-7">
+
+    <!-- Efficiency -->
+
+    <section class="d-flex justify-center container-efficiency px-4 px-md-0 py-10">
       <v-container>
         <v-row>
           <v-col
             cols="12"
-            sm="6"
-            class="d-flex align-center"
+            md="6"
+            class="d-flex justify-center"
           >
-            <v-img class="img-results" src="../assets/mockup-celular.png"></v-img>
+            <v-img
+              class="w-100 img-efficiency"
+              src="../assets/undraw_performance_overview_re_mqrq.svg"
+            ></v-img>
           </v-col>
           <v-col
             cols="12"
-            sm="6"
-            class="d-flex justify-center align-center px-8"
+            md="6"
           >
-            <div>
-              <h1 class="mb-7 text-white">100% gratuito comece a usar hoje!</h1>
-              <BtnLoginNav
+            <h1 class="font-weight-bold mb-5 text-white">Tenha mais controle e eficiência em suas movimentações!</h1>
+            <BtnLoginNav
                 @click="linkPagina()"
                 link="/auth/registrar"
-              >
-                Comece agora!
-              </BtnLoginNav>
-            </div>
+            >
+              Comece agora!
+            </BtnLoginNav>
           </v-col>
         </v-row>
       </v-container>
     </section>
-    <section class="container-testimonials">
+    <section class="container-testimonials py-7">
       <v-container>
+        <h1
+          class="text-center mb-7 text-h6 d-flex align-center"
+        > 
+          <div class="bar-title me-3"></div>
+          Depoimentos
+        </h1>
         <v-row>
           <v-col
+            v-for="testimonial in testimonials"
+            :key="testimonial"
             cols="12"
+            md="4"
+            class="d-flex justify-center"
           >
-            <v-carousel
-              cycle
-              height="350"
-              hide-delimiter-background
-              show-arrows="hover"
-            >
-              <v-carousel-item
-                v-for="slide in testimonials"
-                :key="slide"
-              >
-                <div class="container-card-testimonials d-flex justify-center align-center">
-                  <div
-                    class="card-testimonials rounded-lg elevation-6 pa-3"
-                  >
-                    <div class="text-testimonials d-flex align-center">
-                      <cite class="text-testimonials-cite text-white">"{{ slide.text }}"</cite>
-                    </div>
-                    <div class="assessment d-flex">
-                      <div
-                        class="mx-1"
-                        v-for="star in [,,,,,]"
-                        :key="star"
-                      >
-                        <v-img
-                          class="img-assessment"
-                          src="../assets/black-star-silhouette.png"
-                        ></v-img>
-                      </div>
-                    </div>
-                  </div>
+            <div class="testimonial rounded-lg pa-4 elevation-6">
+              <div class="h-75">
+                <h1
+                  class="text-subtitle-1"
+                >
+                  {{ testimonial }}
+                </h1>
+              </div>
+              <div class="h-25 d-flex align-end">
+                <div class="d-flex">
+                  <v-img
+                    v-for="star in [,,,,]"
+                    :key="star" 
+                    width="16"
+                    height="16"
+                    class="me-1"
+                    src="../assets/black-star-silhouette.png"
+                  ></v-img>
                 </div>
-              </v-carousel-item>
-            </v-carousel>
+              </div>
+            </div>
+
           </v-col>
         </v-row>
+      </v-container>
+    </section>
+
+    <!-- CEO -->
+
+    <section class="ceo py-14 px-4 px-md-0 d-flex justify-center">
+      <v-container class="d-flex justify-center">
+        <div class="card-ceo rounded-lg">
+          <h1>Luiz</h1>
+          <h3 class="text-subtitle-1 font-italic mb-4">Ceo/Front-end Developer</h3>
+          <p>Criador da DaskFinances, uma plataforma de controle financeiro que ajuda pessoas a registrar seus gastos, receitas e aprender a cuidar melhor de seu dinheiro.</p>
+        </div>
       </v-container>
     </section>
     <FooterHome />
@@ -236,22 +259,11 @@ onMounted(() => {
 let hasAccount = ref(false)
 let notLogged = ref(true)
 
-// Testimonials
-
-const testimonials = ref([
-  {
-    text: 'Excelente sistema de controle financeiro pessoal. Recomendo!',
-  },
-  {
-    text: 'Simples de usar e me ajudou a economizar dinheiro.',
-  },
-  {
-    text: 'Muito útil para organizar minhas despesas diárias.',
-  },
-  {
-    text: 'Ótima ferramenta para alcançar metas financeiras importantes.',
-  },
-])
+const testimonials = [
+  "Sistema de controle de finanças simples e eficiente.",
+  "Ótima ferramenta para organizar as finanças pessoais. Recomendo!",
+  "Esse sistema me ajudou a economizar e planejar melhor minhas finanças. Muito útil!"
+]
 
 </script>
 
@@ -370,6 +382,17 @@ const testimonials = ref([
     }
   }
 
+  .container-efficiency {
+    background-color: #272a2d;
+    h1 {
+      font-size: 2rem;
+    }
+
+    .img-efficiency {
+      max-width: 400px;
+    }
+  }
+
   @media screen and (max-width: 768px) {
     .container-results {
       h1 {
@@ -379,37 +402,14 @@ const testimonials = ref([
     }
   }
 
-  .container-cta-app {
-    background-image: linear-gradient(to right,#36393e,#222428);
-  }
-
   .container-testimonials {
-    background-color: #222428;
-    .container-card-testimonials {
+    background-color: #17191c;
+
+    .testimonial {
       width: 100%;
-      height: 100%;
-      .card-testimonials {
-        background-color: $secondary-color;
-        width: 100%;
-        max-width: 300px;
-        height: 150px;
-
-        .text-testimonials {
-          height: 100px;
-        }
-
-        .text-testimonials-cite {
-          font-size: 15px; 
-        }
-
-        .assessment {
-          height: 30px;
-
-          .img-assessment {
-            width: 15px !important;
-          }
-        }
-      }
+      max-width: 350px;
+      height: 130px;
+      background-color: #25272c;
     }
   }
 
@@ -429,4 +429,25 @@ const testimonials = ref([
       background-image: linear-gradient(to top right,rgb(0, 136, 255) 45%,rgb(0, 225, 255))
     }
   }
+
+  .bar-title {
+    height: 3px;
+    width: 25px;
+    background-color: rgb(0, 136, 255);
+  }
+
+  .ceo {
+    background-color: #272a2d;
+
+    h3 {
+      color: #9ea0a1;
+    }
+
+    .card-ceo {
+      width: 100%;
+      max-width: 550px;
+
+    }
+  }
+
 </style>

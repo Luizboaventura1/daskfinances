@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkapp"]=self["webpackChunkapp"]||[]).push([[94],{7532:function(e,n,a){a.r(n),a.d(n,{default:function(){return p}});var u=a(3396),r=a(4055),s={__name:"TransacoesView",setup(e){return(e,n)=>((0,u.wg)(),(0,u.j4)(r.Z))}};const t=s;var p=t}}]);
+//# sourceMappingURL=94.d2674bff.js.map
